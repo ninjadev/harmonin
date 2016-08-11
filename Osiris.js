@@ -1,27 +1,117 @@
 (function(global) {
   'use strict';
 
+  function clamp(a, v, b) {
+    return Math.min(b, Math.max(v, a));
+  }
+
+  function finitize(v) {
+    return (v * 1e5 | 0) / 1e5;
+  }
+
+  function lerp(a, b, t) {
+    t = clamp(0, t, 1);
+    return finitize(b * t + a * (1 - t));
+  } 
+
   class OscillatorSettings {
-    constructor() {
-        this.type = 'sine';
-        this.pitch = 0;
-        this.amplitude = 1;
+    constructor(settings) {
+        this.type = settings.type;
+        this.pitch = settings.pitch;
     }
   }
 
   class Osiris {
-    constructor(audioContext) {
+    constructor(audioContext, settings) {
       this.audioContext = audioContext;
       this.notes = [];
-      this.outputNode = audioContext.createGain();
-      this.outputNode.connect(audioContext.destination);
-      this.outputNode.gain.value = 0.1;
+      for(var i = 0; i < 32; i++) {
+        this.notes.push({
+          startTime: -1,
+          releaseTime: -1,
+          oscillators: [],
+          gain: null,
+          note: 0,
+          velocity: 0
+        });
+      }
+      this.activeNotesCount = 0;
+      this.outputNode = this.audioContext.createGain();
+      this.outputNode.connect(this.audioContext.destination);
+      this.outputNode.gain.value = 0.1 * settings.volume;
+      this.envelope = settings.envelope;
+      this.filterEnvelope = settings.filterEnvelope;
       this.oscillatorSettings = [
-        new OscillatorSettings(),
-        new OscillatorSettings(),
-        new OscillatorSettings()
+        new OscillatorSettings(settings.oscillator1),
+        new OscillatorSettings(settings.oscillator2),
+        new OscillatorSettings(settings.oscillator3)
       ];
-      this.vibratoFrequency = 5;
+      this.vibratoFrequency = settings.vibratoFrequency;
+
+      this.portamentoTime = settings.portamentoTime;
+      this.currentPortamentoNote = 45;
+
+      this.filter = this.audioContext.createBiquadFilter();
+      this.filter.type = settings.filterType;
+      this.filter.frequency.value = settings.filterFrequency || 0;
+      this.filter.connect(this.outputNode);
+    }
+
+    tick(time) {
+      for(var i = 0; i < this.activeNotesCount; i++) {
+        var note = this.notes[i];
+        var noteTime = time - note.startTime;
+        var releaseTime = time - note.releaseTime;
+
+        if(this.portamentoTime) {
+          this.currentPortamentoNote = lerp(
+            note.portamentoStart,
+            note.portamentoTarget,
+            1000 * noteTime / this.portamentoTime);
+          for(var j = 0; j < note.oscillators.length; j++) {
+          var frequency = this.noteNumberToFrequency(
+            this.oscillatorSettings[j].pitch + this.currentPortamentoNote);
+          note.oscillators[j].frequency.value = frequency;
+          }
+        }
+
+        if(this.filterEnvelope) {
+          if(note.releaseTime > -1) {
+            note.filter.frequency.value = lerp(
+                this.filterEnvelope.S * 21000,
+                0,
+                1000 * releaseTime / this.filterEnvelope.R);
+          } else {
+            note.filter.frequency.value = lerp(
+                0,
+                this.filterEnvelope.S * 21000,
+                1000 * noteTime / this.filterEnvelope.A);
+          }
+        }
+
+
+        if(note.releaseTime > -1) {
+          note.gain.gain.value = lerp(this.envelope.S, 0,
+              1000 * releaseTime / this.envelope.R);
+          if(releaseTime >= this.envelope.R / 1000) {
+            this.notes[i--] = this.notes[--this.activeNotesCount];
+            this.notes[this.activeNotesCount] = note;
+            try {
+              note.gain.disconnect(this.filter);
+            } catch(e) {
+              console.log(e, this.activeNotesCount, note, note.gain);
+            }
+            continue;
+          }
+        } else if(noteTime < this.envelope.A) {
+          note.gain.gain.value = lerp(0, 1, 1000 * noteTime / this.envelope.A);
+        } else {
+          note.gain.gain.value = lerp(
+            1, this.envelope.S,
+            (1000 * noteTime - this.envelope.A) / this.envelope.D);
+        }
+        note.gain.gain.value *= note.velocity / 127;
+      }
     }
     
     noteNumberToFrequency(note) {
@@ -29,36 +119,68 @@
     }
 
     noteOn(note, velocity) {
-      this.noteOff(note, velocity);
+      var time = this.audioContext.currentTime;
       var oscillators = [];
+      var gain = this.audioContext.createGain();
+      gain.gain.value = 0;
+      gain.connect(this.filter);
+      if(this.filterEnvelope)  {
+        var filter = this.audioContext.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 20000;
+      } else {
+        filter = this.audioContext.createGain();
+      }
+      filter.connect(gain);
+
       for(var settings of this.oscillatorSettings) {
         var oscillator = this.audioContext.createOscillator();
         oscillator.frequency.value = this.noteNumberToFrequency(
             note + settings.pitch);
         oscillator.type = settings.type;
-        oscillator.connect(this.outputNode);
-        oscillator.start(this.audioContext.currentTime);
+        oscillator.connect(filter);
+        oscillator.start(time);
         var vibratoOscillator = this.audioContext.createOscillator();
+        var vibratoGain = this.audioContext.createGain();
+        vibratoGain.gain.value = 2;
         vibratoOscillator.frequency.value = this.vibratoFrequency;
-        vibratoOscillator.start(this.audioContext.currentTime);
-        vibratoOscillator.connect(oscillator.frequency);
+        vibratoOscillator.start(time);
+        vibratoOscillator.connect(vibratoGain);
+        vibratoGain.connect(oscillator.frequency);
         oscillators.push(oscillator);
       }
-      this.notes[note] = {
-        oscillators: oscillators,
-        note: note,
-        velocity: velocity
-      };
+      var n = this.notes[this.activeNotesCount++];
+      n.note = note;
+      n.startTime = time;
+      n.releaseTime = -1;
+      n.oscillators = oscillators;
+      n.gain = gain;
+      n.filter = filter;
+      n.velocity = velocity;
+      n.portamentoStart = this.currentPortamentoNote;
+      n.portamentoTarget = note;
     }
 
     noteOff(note, velocity) {
-      if(!this.notes[note]) {
-        return;
+      var time = this.audioContext.currentTime;
+      for(var i = 0; i < this.activeNotesCount; i++) {
+        if(this.notes[i].note == note) {
+          if(this.notes[i].releaseTime == -1) {
+            for(var oscillator of this.notes[i].oscillators) {
+              oscillator.stop(time + (this.envelope.R / 1000));
+            }
+            this.notes[i].releaseTime = time;
+          }
+        }
       }
-      for(var oscillator of this.notes[note].oscillators) {
-        oscillator.stop(this.audioContext.currentTime);
+    }
+
+    mod(id, value) {
+      switch(id) {
+        case 0:
+          this.filter.frequency.value = Math.pow(value / 127, 2) * 21000;
+          break;
       }
-      delete this.notes[note];
     }
 
   }
