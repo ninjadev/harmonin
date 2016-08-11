@@ -2,38 +2,15 @@
   'use strict';
 
   var audioContext = new AudioContext();
-  var notes = [];
-  
-  var gainNode = audioContext.createGain();
-  gainNode.connect(audioContext.destination);
-  gainNode.gain.value = 0.1;
 
+  var channels = [
+    new Osiris(audioContext),
+    new Osiris(audioContext),
+    new Osiris(audioContext)
+  ]
 
-  function noteNumberToFrequency(note) {
-    return 440 * Math.pow(2, (note - 69) / 12);
-  }
-
-  function noteOn(note, velocity) {
-    noteOff(note, velocity);
-    var oscillator = audioContext.createOscillator();
-    oscillator.frequency.value = noteNumberToFrequency(note);
-    oscillator.type = 'square';
-    oscillator.connect(gainNode);
-    oscillator.start(audioContext.currentTime);
-    notes[note] = {
-      oscillator: oscillator,
-      note: note,
-      velocity: velocity
-    };
-  }
-
-  function noteOff(note, velocity) {
-    if(!notes[note]) {
-      return;
-    }
-    var oscillator = notes[note].oscillator;
-    oscillator.stop(audioContext.currentTime);
-    delete notes[note];
+  for(var channel of channels) {
+    channel.outputNode.connect(audioContext.destination);
   }
 
   navigator.requestMIDIAccess({}).then(function(midiAccess) {
@@ -49,10 +26,10 @@
 
         switch(type) {
           case 144:
-            noteOn(note, velocity);
+            channels[channel].noteOn(note, velocity);
             break;
           case 128:
-            noteOff(note, velocity);
+            channels[channel].noteOff(note, velocity);
             break;
         }
       });
@@ -61,24 +38,5 @@
   }, function(e) {
     console.log(e);  
   })
-
-  var canvas = document.getElementById('c');
-  var ctx = canvas.getContext('2d');
-  canvas.width = 640;
-  canvas.height = 360;
-
-  function render() {
-    requestAnimationFrame(render);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for(var i = 0; i < notes.length; i++) {
-      var note = notes[i];
-      if(!note) {
-        continue;
-      }
-      ctx.fillRect(0, note.note * 2, 640, 2);
-    }
-  }
-  requestAnimationFrame(render);
-
 })();
 
