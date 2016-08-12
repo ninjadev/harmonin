@@ -42,14 +42,14 @@
     new Osiris(audioContext, {
       name: 'Vibrato saw pad',
       vibratoFrequency: 5,
-      volume: 0.4,
+      volume: 0.8,
       portamentoTime: 80,
       envelope: {
         delay: 0,
         attack: 40,
         hold: 0,
         decay: 80,
-        sustain: 0.3,
+        sustain: 0.5,
         release: 1000
       },
       filterType: 'lowpass',
@@ -94,6 +94,14 @@
         type: 'square',
         pitch: -0.12
       }
+    }),
+    new Sampler(audioContext, {
+      volume: 5,
+      filename: 'kick.wav'
+    }),
+    new Sampler(audioContext, {
+      volume: 5,
+      filename: 'snare.wav'
     })
   ]
 

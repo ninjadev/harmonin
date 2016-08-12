@@ -6,3 +6,17 @@
 html, body {
   background: #253237
 }
+
+.channel-container {
+  background: #5c6b73;
+  font-family: Teko, sans-serif;
+  font-weight: 300;
+  color: #9db4c0;
+  width: 500px;
+  border-radius: 2px;
+  margin: 15px;
+  padding: 7px;
+  padding-bottom: 45px;
+  position: relative;
+}
+
