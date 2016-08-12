@@ -10,15 +10,20 @@
       portamentoTime: 100,
       filterType: 'lowpass',
       envelope: {
-        A: 0,
-        D: 0,
-        S: 1,
-        R: 300
+        delay: 0,
+        attack: 0,
+        hold: 0,
+        decay: 0,
+        sustain: 1,
+        release: 300
       },
       filterEnvelope: {
-        A: 0,
-        S: 1,
-        R: 10
+        delay: 0,
+        attack: 0,
+        hold: 0,
+        decay: 0,
+        sustain: 1,
+        release: 10
       },
       oscillator1: {
         type: 'square',
@@ -38,10 +43,12 @@
       volume: 0.4,
       portamentoTime: 80,
       envelope: {
-        A: 40,
-        D: 80,
-        S: 0.3,
-        R: 1000
+        delay: 0,
+        attack: 40,
+        hold: 0,
+        decay: 80,
+        sustain: 0.3,
+        release: 1000
       },
       filterType: 'lowpass',
       filterFrequency: 5000,
@@ -63,10 +70,12 @@
       volume: 0.8,
       portamentoTime: 0,
       envelope: {
-        A: 0,
-        D: 80,
-        S: 0.3,
-        R: 300
+        delay: 0,
+        attack: 0,
+        hold: 0,
+        decay: 80,
+        sustain: 0.3,
+        release: 300
       },
       filterType: 'lowpass',
       filterFrequency: 5000,
