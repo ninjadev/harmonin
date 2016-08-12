@@ -5,6 +5,7 @@
 
   var channels = [
     new Osiris(audioContext, {
+      name: '90\'s chorder',
       vibratoFrequency: 0,
       volume: 2,
       portamentoTime: 100,
@@ -39,6 +40,7 @@
       }
     }),
     new Osiris(audioContext, {
+      name: 'Vibrato saw pad',
       vibratoFrequency: 5,
       volume: 0.4,
       portamentoTime: 80,
@@ -66,6 +68,7 @@
       }
     }),
     new Osiris(audioContext, {
+      name: 'Stabbato pluck',
       vibratoFrequency: 5,
       volume: 0.8,
       portamentoTime: 0,
@@ -93,6 +96,10 @@
       }
     })
   ]
+
+  for(var channel of channels) {
+    document.body.appendChild(channel.domElement);
+  }
 
   for(var channel of channels) {
     channel.outputNode.connect(audioContext.destination);
@@ -147,5 +154,13 @@
   }, function(e) {
     console.log(e);  
   })
+
+  function uiLoop() {
+    requestAnimationFrame(uiLoop);
+    for(channel of channels) {
+      channel.updateUI();
+    }
+  }
+  requestAnimationFrame(uiLoop);
 })();
 
