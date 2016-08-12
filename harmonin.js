@@ -72,6 +72,10 @@
       vibratoFrequency: 5,
       volume: 0.8,
       portamentoTime: 0,
+      delay: {
+        time: 0.3,
+        feedback: 0.5
+      },
       envelope: {
         delay: 0,
         attack: 0,
