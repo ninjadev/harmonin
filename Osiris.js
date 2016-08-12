@@ -39,8 +39,10 @@
       this.outputNode = this.audioContext.createGain();
       this.outputNode.connect(this.audioContext.destination);
       this.outputNode.gain.value = 0.1 * settings.volume;
-      this.envelope = settings.envelope;
-      this.filterEnvelope = settings.filterEnvelope;
+      this.envelope = new Envelope(settings.envelope);
+      if(settings.filterEnvelope) {
+        this.filterEnvelope = new Envelope(settings.filterEnvelope);
+      }
       this.oscillatorSettings = [
         new OscillatorSettings(settings.oscillator1),
         new OscillatorSettings(settings.oscillator2),
@@ -62,6 +64,9 @@
         var note = this.notes[i];
         var noteTime = time - note.startTime;
         var releaseTime = time - note.releaseTime;
+        if(note.releaseTime == -1) {
+          releaseTime = -1;
+        }
 
         if(this.portamentoTime) {
           this.currentPortamentoNote = lerp(
@@ -76,40 +81,18 @@
         }
 
         if(this.filterEnvelope) {
-          if(note.releaseTime > -1) {
-            note.filter.frequency.value = lerp(
-                this.filterEnvelope.S * 21000,
-                0,
-                1000 * releaseTime / this.filterEnvelope.R);
-          } else {
-            note.filter.frequency.value = lerp(
-                0,
-                this.filterEnvelope.S * 21000,
-                1000 * noteTime / this.filterEnvelope.A);
-          }
+          var frequency = 21000 * this.filterEnvelope.getValue(noteTime, releaseTime);
+          note.filter.frequency.value = frequency;
         }
 
-
-        if(note.releaseTime > -1) {
-          note.gain.gain.value = lerp(this.envelope.S, 0,
-              1000 * releaseTime / this.envelope.R);
-          if(releaseTime >= this.envelope.R / 1000) {
-            this.notes[i--] = this.notes[--this.activeNotesCount];
-            this.notes[this.activeNotesCount] = note;
-            try {
-              note.gain.disconnect(this.filter);
-            } catch(e) {
-              console.log(e, this.activeNotesCount, note, note.gain);
-            }
-            continue;
-          }
-        } else if(noteTime < this.envelope.A) {
-          note.gain.gain.value = lerp(0, 1, 1000 * noteTime / this.envelope.A);
-        } else {
-          note.gain.gain.value = lerp(
-            1, this.envelope.S,
-            (1000 * noteTime - this.envelope.A) / this.envelope.D);
+        if(releaseTime >= this.envelope.release / 1000) {
+          this.notes[i--] = this.notes[--this.activeNotesCount];
+          this.notes[this.activeNotesCount] = note;
+          note.gain.disconnect(this.filter);
+          continue;
         }
+        var volume = this.envelope.getValue(noteTime, releaseTime);
+        note.gain.gain.value = volume;
         note.gain.gain.value *= note.velocity / 127;
       }
     }
@@ -129,7 +112,7 @@
         filter.type = 'lowpass';
         filter.frequency.value = 20000;
       } else {
-        filter = this.audioContext.createGain();
+        var filter = this.audioContext.createGain();
       }
       filter.connect(gain);
 
@@ -167,7 +150,7 @@
         if(this.notes[i].note == note) {
           if(this.notes[i].releaseTime == -1) {
             for(var oscillator of this.notes[i].oscillators) {
-              oscillator.stop(time + (this.envelope.R / 1000));
+              oscillator.stop(time + (this.envelope.release / 1000));
             }
             this.notes[i].releaseTime = time;
           }
