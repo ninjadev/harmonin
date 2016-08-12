@@ -1,0 +1,46 @@
+
+/*
+#e0fbfc
+#c2dfe3
+#9db4c0
+#5c6b73
+#253237
+*/
+
+.osiris-container {
+  background: #5c6b73;
+  font-family: Teko, sans-serif;
+  font-weight: 300;
+  color: #9db4c0;
+  width: 500px;
+  border-radius: 2px;
+  margin: 15px;
+  padding: 7px;
+  padding-bottom: 45px;
+  position: relative;
+}
+
+.active-notes {
+  text-align: center;
+  width: 10px;
+  position: absolute;
+  bottom: 0;
+  right: 5px;
+  color: #9db4c0;
+}
+
+.name {
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #253237;
+  border-bottom: 1px solid #253237;
+}
+
+.patch-name {
+  color: #9db4c0;
+  margin-left: 2px;
+}
+
+.filter-frequency {
+  font-weight: 300;
+}
