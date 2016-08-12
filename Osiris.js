@@ -60,6 +60,7 @@
 
       this.domElement = document.createElement('div');
       this.domElement.classList.add('osiris-container');
+      this.domElement.classList.add('channel-container');
       this.domElement.innerHTML = `
       <div class="name">
         Osiris Soft Synth <span class="patch-name">${settings.name}</span>
@@ -123,7 +124,7 @@
     }
     
     noteNumberToFrequency(note) {
-      return 440 * Math.pow(2, (note - 69) / 12);
+      return 440 * Math.pow(2, (note - 60) / 12);
     }
 
     noteOn(note, velocity) {
