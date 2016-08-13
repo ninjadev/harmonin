@@ -6,8 +6,10 @@
       this.audioContext = audioContext;
       this.audioBuffer = settings.audioBuffer;
       this.outputNode = this.audioContext.createGain();
-      this.outputNode.connect(this.audioContext.destination);
       this.outputNode.gain.value = 0.1 * settings.volume;
+      this.reverbSendNode = this.audioContext.createGain();
+      this.reverbSendNode.gain.value = settings.reverb || 0;
+      this.outputNode.connect(this.reverbSendNode);
 
       this.domElement = document.createElement('div');
       this.domElement.classList.add('sampler-container');
