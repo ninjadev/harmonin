@@ -163,6 +163,7 @@
 
     for(var input of midi.inputs.values()) {
       input.addEventListener('midimessage', function(e) {
+        console.log('midimessage', e);
         var channel = e.data[0] & 0xf;
         var type = e.data[0] & 0xf0;
         var note = e.data[1];

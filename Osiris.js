@@ -21,9 +21,9 @@
     }
   }
 
-  class Osiris {
+  class Osiris extends BaseChannel {
     constructor(audioContext, settings) {
-      this.audioContext = audioContext;
+      super(audioContext, settings);
       this.notes = [];
       for(var i = 0; i < 32; i++) {
         this.notes.push({
@@ -36,11 +36,6 @@
         });
       }
       this.activeNotesCount = 0;
-      this.outputNode = this.audioContext.createGain();
-      this.outputNode.gain.value = 0.1 * settings.volume;
-      this.reverbSendNode = this.audioContext.createGain();
-      this.reverbSendNode.gain.value = settings.reverb || 0;
-      this.outputNode.connect(this.reverbSendNode);
       this.envelope = new Envelope(settings.envelope);
       if(settings.filterEnvelope) {
         this.filterEnvelope = new Envelope(settings.filterEnvelope);
@@ -54,22 +49,6 @@
 
       this.portamentoTime = settings.portamentoTime;
       this.currentPortamentoNote = 45;
-
-      this.filter = this.audioContext.createBiquadFilter();
-      this.filter.type = settings.filterType;
-      this.filter.frequency.value = settings.filterFrequency || 0;
-      this.filter.connect(this.outputNode);
-
-      if(settings.delay) {
-        this.delay = this.audioContext.createDelay();
-        this.delay.delayTime.value = settings.delay.time;
-        this.delayGain = this.audioContext.createGain();
-        this.delayGain.gain.value = settings.delay.feedback;
-        this.filter.connect(this.delay);
-        this.delay.connect(this.delayGain);
-        this.delayGain.connect(this.delay);
-        this.delayGain.connect(this.outputNode);
-      }
 
       this.domElement = document.createElement('div');
       this.domElement.classList.add('osiris-container');
@@ -136,10 +115,6 @@
       }
     }
     
-    noteNumberToFrequency(note) {
-      return 440 * Math.pow(2, (note - 60) / 12);
-    }
-
     noteOn(note, velocity) {
       var time = this.audioContext.currentTime;
       var oscillators = [];
