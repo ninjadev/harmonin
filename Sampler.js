@@ -1,16 +1,9 @@
 (function(global) {
   'use strict';
 
-  class Sampler {
+  class Sampler extends BaseChannel {
     constructor(audioContext, settings) {
-      this.audioContext = audioContext;
-      this.audioBuffer = settings.audioBuffer;
-      this.outputNode = this.audioContext.createGain();
-      this.outputNode.gain.value = 0.1 * settings.volume;
-      this.reverbSendNode = this.audioContext.createGain();
-      this.reverbSendNode.gain.value = settings.reverb || 0;
-      this.outputNode.connect(this.reverbSendNode);
-
+      super(audioContext, settings);
       this.domElement = document.createElement('div');
       this.domElement.classList.add('sampler-container');
       this.domElement.classList.add('channel-container');
@@ -38,14 +31,7 @@
       }
       request.send();
     }
-
-    tick(time) {
-    }
     
-    noteNumberToFrequency(note) {
-      return 440 * Math.pow(2, (note - 60) / 12);
-    }
-
     noteOn(note, velocity) {
       if(this.audioBuffer) {
         var source = this.audioContext.createBufferSource();
@@ -57,15 +43,6 @@
         source.connect(gain);
         source.start();
       }
-    }
-
-    noteOff(note, velocity) {
-    }
-
-    mod(id, value) {
-    }
-
-    updateUI() {
     }
   }
 
