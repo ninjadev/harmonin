@@ -5,6 +5,7 @@
 
   var channels = [
     new Osiris(audioContext, {
+      reverb: 0.2,
       name: '90\'s chorder',
       vibratoFrequency: 0,
       volume: 2,
@@ -65,16 +66,17 @@
       oscillator3: {
         type: 'sawtooth',
         pitch: -0.12
-      }
+      },
+      reverb: 1
     }),
     new Osiris(audioContext, {
       name: 'Stabbato pluck',
-      vibratoFrequency: 5,
-      volume: 0.8,
+      vibratoFrequency: 140 / 60 * 2,
+      volume: 1.2,
       portamentoTime: 0,
       delay: {
-        time: 0.3,
-        feedback: 0.5
+        time: 60 / 140 / 4 * 3,
+        feedback: 0.3
       },
       envelope: {
         delay: 0,
@@ -82,8 +84,9 @@
         hold: 0,
         decay: 80,
         sustain: 0.3,
-        release: 300
+        release: 100
       },
+      reverb: 0.5,
       filterType: 'lowpass',
       filterFrequency: 5000,
       oscillator1: {
@@ -109,12 +112,28 @@
     })
   ]
 
+  var reverbNode = audioContext.createConvolver();
+  reverbNode.connect(audioContext.destination);
+  (function() {
+    var request = new XMLHttpRequest();
+    request.open('GET', 'irHall.ogg', true);
+    request.responseType = 'arraybuffer';
+    request.onload = function() {
+      audioContext.decodeAudioData(request.response, function(buffer) {
+        reverbNode.buffer = buffer;
+      },
+      function(e){console.log(e)});
+    }
+    request.send();
+  })();
+
   for(var channel of channels) {
     document.body.appendChild(channel.domElement);
   }
 
   for(var channel of channels) {
     channel.outputNode.connect(audioContext.destination);
+    channel.reverbSendNode.connect(reverbNode);
   }
 
   var eventTimingLoopNode = audioContext.createScriptProcessor(256, 1, 1);
