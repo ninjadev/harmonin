@@ -3,6 +3,7 @@
 
   class BaseChannel {
     constructor(audioContext, settings) {
+      this.settings = settings;
       this.audioContext = audioContext;
       this.outputNode = this.audioContext.createGain();
       this.outputNode.gain.value = 0.1 * settings.volume;

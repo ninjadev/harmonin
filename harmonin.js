@@ -1,4 +1,4 @@
-(function() {
+(function(global) {
   'use strict';
 
   var audioContext = new AudioContext();
@@ -128,7 +128,8 @@
   })();
 
   for(var channel of channels) {
-    document.body.appendChild(channel.domElement);
+    channel.__UI = new global[channel.constructor.name + 'UI'](channel);
+    document.body.appendChild(channel.__UI.domElement);
   }
 
   for(var channel of channels) {
@@ -190,9 +191,8 @@
   function uiLoop() {
     requestAnimationFrame(uiLoop);
     for(channel of channels) {
-      channel.updateUI();
+      channel.__UI.update();
     }
   }
   requestAnimationFrame(uiLoop);
-})();
-
+})(this);
