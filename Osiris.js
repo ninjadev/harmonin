@@ -21,6 +21,42 @@
     }
   }
 
+  class OsirisUI extends BaseUI {
+    constructor(channel) {
+      super(channel);
+      this.domElement = document.createElement('div');
+      this.domElement.classList.add('osiris-container');
+      this.domElement.classList.add('channel-container');
+      this.domElement.innerHTML = `
+      <div class="name">
+        Osiris Soft Synth <span class="patch-name">${channel.settings.name}</span>
+      </div>
+      <div class="filter-frequency">
+        Filter frequency
+        <input
+          type="range"
+          min="0"
+          max="21000"
+          step="1"
+          >
+      </div>
+      <div class="active-notes">
+      </div>
+      `;
+      this.UI = {
+        activeNotes:
+          this.domElement.querySelector('.active-notes'),
+        filterFrequencyInput:
+          this.domElement.querySelector('.filter-frequency input')     
+      };
+    }
+
+    update() {
+      this.UI.activeNotes.innerText = this.channel.activeNotesCount;
+      this.UI.filterFrequencyInput.value = this.channel.filter.frequency.value;
+    }
+  }
+
   class Osiris extends BaseChannel {
     constructor(audioContext, settings) {
       super(audioContext, settings);
@@ -49,32 +85,6 @@
 
       this.portamentoTime = settings.portamentoTime;
       this.currentPortamentoNote = 45;
-
-      this.domElement = document.createElement('div');
-      this.domElement.classList.add('osiris-container');
-      this.domElement.classList.add('channel-container');
-      this.domElement.innerHTML = `
-      <div class="name">
-        Osiris Soft Synth <span class="patch-name">${settings.name}</span>
-      </div>
-      <div class="filter-frequency">
-        Filter frequency
-        <input
-          type="range"
-          min="0"
-          max="21000"
-          step="1"
-          >
-      </div>
-      <div class="active-notes">
-      </div>
-      `;
-      this.UI = {
-        activeNotes:
-          this.domElement.querySelector('.active-notes'),
-        filterFrequencyInput:
-          this.domElement.querySelector('.filter-frequency input')     
-      };
     }
 
     tick(time) {
@@ -180,12 +190,8 @@
       }
     }
 
-    updateUI() {
-      this.UI.activeNotes.innerText = this.activeNotesCount;
-      this.UI.filterFrequencyInput.value = this.filter.frequency.value;
-    }
-
   }
 
   global.Osiris = Osiris;
+  global.OsirisUI = OsirisUI;
 })(this);
