@@ -33,12 +33,6 @@
       </div>
       <div class="filter-frequency">
         Filter frequency
-        <input
-          type="range"
-          min="0"
-          max="21000"
-          step="1"
-          >
       </div>
       <div class="active-notes">
       </div>
@@ -46,14 +40,15 @@
       this.UI = {
         activeNotes:
           this.domElement.querySelector('.active-notes'),
-        filterFrequencyInput:
-          this.domElement.querySelector('.filter-frequency input')     
+        filterFrequencyKnob: new Knob()
       };
+      this.domElement.querySelector('.filter-frequency').appendChild(
+        this.UI.filterFrequencyKnob.domElement);
     }
 
     update() {
       this.UI.activeNotes.innerText = this.channel.activeNotesCount;
-      this.UI.filterFrequencyInput.value = this.channel.filter.frequency.value;
+      this.UI.filterFrequencyKnob.setValue(this.channel.filter.frequency.value / 21000);
     }
   }
 
