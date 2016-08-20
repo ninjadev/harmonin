@@ -14,10 +14,10 @@ class OscillatorSettingsUI {
     `;
     this.pitch = new Knob({
       name: 'Pitch',
-      audioParam: settings.oscillatorSettings.volume,
+      audioParam: settings.oscillatorSettings.pitch,
       mapping: 'linear',
-      min: 0,
-      max: 1
+      min: -12,
+      max: 12
     });
     this.domElement.appendChild(this.pitch.domElement);
   }
@@ -32,6 +32,32 @@ class OsirisUI extends BaseUI {
     super(channel);
     this.name = 'Osiris Soft Synth';
     this.renderDOM();
+    this.osirisKnobs = [
+      new Knob({
+        name: 'Portamento',
+        audioParam: channel.portamentoTime,
+        mapping: 'linear',
+        min: 0,
+        max: 1000
+      }),
+      new Knob({
+        name: 'Vibrato frq.',
+        audioParam: channel.vibratoFrequency,
+        mapping: 'square',
+        min: 0,
+        max: 100
+      }),
+      new Knob({
+        name: 'Vibrato amount',
+        audioParam: channel.vibratoAmount,
+        mapping: 'square',
+        min: 0,
+        max: 12
+      })
+    ];
+    for(var knob of this.osirisKnobs) {
+      this.domElement.appendChild(knob.domElement);
+    }
     this.envelopeUI = new EnvelopeUI({
       name: 'Volume envelope',
       envelope: channel.envelope
@@ -59,6 +85,9 @@ class OsirisUI extends BaseUI {
     this.filterEnvelopeUI.update();
     for(var oscillatorSettingsUI of this.oscillatorSettingsUIs) {
       oscillatorSettingsUI.update();
+    }
+    for(var knob of this.osirisKnobs) {
+      knob.update();
     }
   }
 }
