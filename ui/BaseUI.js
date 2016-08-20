@@ -65,20 +65,8 @@ class BaseUI {
   }
 
   update() {
-    if(!this.knobs.volume.dragging) {
-      this.knobs.volume.setDenormalizedValue(this.channel.outputNode.gain.value);
-    }
-    if(!this.knobs.reverb.dragging) {
-      this.knobs.reverb.setDenormalizedValue(this.channel.reverbSendNode.gain.value);
-    }
-    if(!this.knobs.filter.dragging) {
-      this.knobs.filter.setDenormalizedValue(this.channel.filter.frequency.value);
-    }
-    if(!this.knobs.delayTime.dragging) {
-      this.knobs.delayTime.setDenormalizedValue(this.channel.delay.delayTime.value);
-    }
-    if(!this.knobs.delayAmount.dragging) {
-      this.knobs.delayAmount.setDenormalizedValue(this.channel.delayGain.gain.value);
+    for(var key in this.knobs) {
+      this.knobs[key].update();
     }
   }
 }

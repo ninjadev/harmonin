@@ -1,5 +1,7 @@
 'use strict';
 
+var Parameter = require('../utils/Parameter.js');
+
 function clamp(a, v, b) {
   return Math.min(b, Math.max(v, a));
 }
@@ -15,38 +17,48 @@ function lerp(a, b, t) {
 
 class Envelope {
   constructor(settings) {
-    this.delay = settings.delay;
-    this.attack = settings.attack;
-    this.hold = settings.hold;
-    this.decay = settings.decay;
-    this.sustain = settings.sustain;
-    this.release = settings.release;
+    if(!settings) {
+      settings = {
+        delay: 0,
+        attack: 0,
+        hold: 0,
+        decay: 0,
+        sustain: 1,
+        release: 0
+      };
+    }
+    this.delay = new Parameter(settings.delay);
+    this.attack = new Parameter(settings.attack);
+    this.hold = new Parameter(settings.hold);
+    this.decay = new Parameter(settings.decay);
+    this.sustain = new Parameter(settings.sustain);
+    this.release = new Parameter(settings.release);
   }
 
   getValue(time, releaseTime) {
     var value = 0;
     var releaseAmount = 0;
     if(releaseTime >= 0) {
-      releaseAmount = 1000 * releaseTime / this.release;
+      releaseAmount = 1000 * releaseTime / this.release.value;
       time = time - releaseTime;
     }
     time *= 1000;
-    if(time < this.delay) {
+    if(time < this.delay.value) {
       value = 0;
       return lerp(value, 0, releaseAmount);
     }
-    time -= this.delay;
-    if(time < this.attack) {
-      value = lerp(0, 1, time / this.attack);
+    time -= this.delay.value;
+    if(time < this.attack.value) {
+      value = lerp(0, 1, time / this.attack.value);
       return lerp(value, 0, releaseAmount);
     }
-    time -= this.attack;
-    if(time < this.hold) {
+    time -= this.attack.value;
+    if(time < this.hold.value) {
       value = 1;
       return lerp(value, 0, releaseAmount);
     }
-    time -= this.hold;
-    value = lerp(1, this.sustain, time / this.decay);
+    time -= this.hold.value;
+    value = lerp(1, this.sustain.value, time / this.decay.value);
     return lerp(value, 0, releaseAmount);
   }
 }
