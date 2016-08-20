@@ -21,6 +21,7 @@ class OscillatorSettings {
   constructor(settings) {
       this.type = settings.type;
       this.pitch = new Parameter(settings.pitch);
+      this.volume = settings.volume;
   }
 }
 
@@ -51,6 +52,9 @@ class Osiris extends BaseChannel {
 
     this.portamentoTime = new Parameter(settings.portamentoTime);
     this.currentPortamentoNote = 45;
+
+    this.pitchBend = new Parameter(0);
+    this.pitchBendAmount = 2;
   }
 
   tick(time) {
@@ -75,7 +79,8 @@ class Osiris extends BaseChannel {
       }
 
       if(this.filterEnvelope) {
-        var frequency = 21000 * this.filterEnvelope.getValue(noteTime, releaseTime);
+        var frequency = 21000 * Math.pow(this.filterEnvelope.getValue(noteTime, releaseTime), 2);
+        console.log(frequency);
         note.filter.frequency.value = frequency;
       }
 
@@ -110,8 +115,11 @@ class Osiris extends BaseChannel {
       var oscillator = this.audioContext.createOscillator();
       oscillator.frequency.value = this.noteNumberToFrequency(
           note + settings.pitch.value);
+      var oscillatorGain = this.audioContext.createGain();
+      oscillatorGain.gain.value = settings.volume;
       oscillator.type = settings.type;
-      oscillator.connect(filter);
+      oscillator.connect(oscillatorGain);
+      oscillatorGain.connect(filter);
       oscillator.start(time);
       var vibratoOscillator = this.audioContext.createOscillator();
       var vibratoGain = this.audioContext.createGain();
