@@ -4,7 +4,8 @@ FL to Web MIDI API bridge and all-in-one synthesizer built for js demos.
 
 ## FL Bridge Setup Instructions
 
-1. Install a virtual loopback midi cable, e.g. http://www.tobias-erichsen.de/software/loopmidi.html .
+1. Install a virtual loopback midi cable, e.g. http://www.tobias-erichsen.de/software/loopmidi.html . 
+   For OS X, this guide is helpful: https://www.ableton.com/en/help/article/using-virtual-MIDI-buses-live/ .
 2. Select the proper MIDI in FL's MIDI settings (F10).
 ![](http://i.imgur.com/7VBuQbC.png)
 3. Add a MIDI Out in the FL Channel rack.
