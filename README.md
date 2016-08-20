@@ -2,6 +2,10 @@
 
 FL to Web MIDI API bridge and all-in-one synthesizer built for js demos.
 
+# Compile
+
+Before you can run harmonin, you need to compile. Make sure you have webpack installed (`npm install webpack -g`) and run `webpack` inside the harmonin folder. This creates the file `compiled.js`
+
 ## FL Bridge Setup Instructions
 
 1. Install a virtual loopback midi cable, e.g. http://www.tobias-erichsen.de/software/loopmidi.html . 
