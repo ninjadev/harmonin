@@ -44,11 +44,15 @@
       };
       this.domElement.querySelector('.filter-frequency').appendChild(
         this.UI.filterFrequencyKnob.domElement);
+      this.UI.filterFrequencyKnob.setValue(this.channel.filter.frequency.value / 21000);
+      var that = this;
+      this.UI.filterFrequencyKnob.callback = function() {
+        that.channel.filter.frequency.value = this.value * 21000;
+      };
     }
 
     update() {
       this.UI.activeNotes.innerText = this.channel.activeNotesCount;
-      this.UI.filterFrequencyKnob.setValue(this.channel.filter.frequency.value / 21000);
     }
   }
 
@@ -181,6 +185,7 @@
       switch(id) {
         case 0:
           this.filter.frequency.value = Math.pow(value / 127, 2) * 21000;
+          this.__UI.UI.filterFrequencyKnob.setValue(this.filter.frequency.value / 21000);
           break;
       }
     }
