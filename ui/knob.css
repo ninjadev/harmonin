@@ -1,4 +1,11 @@
 .knob-container {
+  display: inline-block;
+}
+
+.knob-container .knob-name {
+  text-align: center;
+  font-size: 14px;
+  color: #253237;
 }
 
 .knob {
