@@ -1,14 +1,13 @@
-(function(global) {
-  'use strict';
-  class BaseUI {
-    constructor(channel) {
-      this.channel = channel;
-      this.domElement = document.createElement('div');
-    }
+'use strict';
 
-    update() {
-    }
+class BaseUI {
+  constructor(channel) {
+    this.channel = channel;
+    this.domElement = document.createElement('div');
   }
 
-  global.BaseUI = BaseUI;
-})(this);
+  update() {
+  }
+}
+
+module.exports = BaseUI;
