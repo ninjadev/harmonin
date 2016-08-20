@@ -1,118 +1,34 @@
 'use strict';
 
 var Osiris = require('./channels/Osiris');
-var Sampler = require('./channels/Sampler');
+var Sampler = require('./channels/Sampler')
 var OsirisUI = require('./ui/OsirisUI');
 var SamplerUI = require('./ui/SamplerUI');
 
 var audioContext = new AudioContext();
 
 var channels = [
-  new Osiris(audioContext, {
-    reverb: 0.2,
-    name: '90\'s chorder',
-    vibratoFrequency: 0,
-    volume: 2,
-    portamentoTime: 100,
-    filterType: 'lowpass',
-    envelope: {
-      delay: 0,
-      attack: 0,
-      hold: 0,
-      decay: 0,
-      sustain: 1,
-      release: 300
-    },
-    filterEnvelope: {
-      delay: 0,
-      attack: 0,
-      hold: 0,
-      decay: 0,
-      sustain: 1,
-      release: 10
-    },
-    oscillator1: {
-      type: 'square',
-      pitch: -12
-    },
-    oscillator2: {
-      type: 'square',
-      pitch: 3.86
-    },
-    oscillator3: {
-      type: 'square',
-      pitch: -5
-    }
-  }),
-  new Osiris(audioContext, {
-    name: 'Vibrato saw pad',
-    vibratoFrequency: 5,
-    volume: 0.8,
-    portamentoTime: 80,
-    envelope: {
-      delay: 0,
-      attack: 40,
-      hold: 0,
-      decay: 80,
-      sustain: 0.5,
-      release: 1000
-    },
-    filterType: 'lowpass',
-    filterFrequency: 5000,
-    oscillator1: {
-      type: 'sawtooth',
-      pitch: 0
-    },
-    oscillator2: {
-      type: 'sawtooth',
-      pitch: 0.12
-    },
-    oscillator3: {
-      type: 'sawtooth',
-      pitch: -0.12
-    },
-    reverb: 1
-  }),
-  new Osiris(audioContext, {
-    name: 'Stabbato pluck',
-    vibratoFrequency: 140 / 60 * 2,
-    volume: 1.2,
-    portamentoTime: 0,
-    delay: {
-      time: 60 / 140 / 4 * 3,
-      feedback: 0.3
-    },
-    envelope: {
-      delay: 0,
-      attack: 0,
-      hold: 0,
-      decay: 80,
-      sustain: 0.3,
-      release: 100
-    },
-    reverb: 0.5,
-    filterType: 'lowpass',
-    filterFrequency: 5000,
-    oscillator1: {
-      type: 'sawtooth',
-      pitch: 0
-    },
-    oscillator2: {
-      type: 'square',
-      pitch: 0.12
-    },
-    oscillator3: {
-      type: 'square',
-      pitch: -0.12
-    }
-  }),
+  new Osiris(audioContext, require('./presets/osiris/UltraNiceAnalogueStyleSaw')),
+  new Osiris(audioContext, require('./presets/osiris/Mellosynth')),
+  new Osiris(audioContext, require('./presets/osiris/WidePad')),
+  new Osiris(audioContext, require('./presets/osiris/SquarePluck')),
   new Sampler(audioContext, {
     volume: 5,
     filename: 'data/kick.wav'
   }),
   new Sampler(audioContext, {
-    volume: 5,
+    volume: 10,
     filename: 'data/snare.wav'
+  }),
+  new Sampler(audioContext, {
+    reverb: 0.25,
+    volume: 1,
+    filename: 'data/hihat.wav'
+  }),
+  new Sampler(audioContext, {
+    reverb: .5,
+    volume: 20,
+    filename: 'data/crash.wav'
   })
 ]
 

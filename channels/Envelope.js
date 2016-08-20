@@ -24,7 +24,9 @@ class Envelope {
         hold: 0,
         decay: 0,
         sustain: 1,
-        release: 0
+        release: 0,
+        amount: 1,
+        offset: 0
       };
     }
     this.delay = new Parameter(settings.delay);
@@ -33,6 +35,8 @@ class Envelope {
     this.decay = new Parameter(settings.decay);
     this.sustain = new Parameter(settings.sustain);
     this.release = new Parameter(settings.release);
+    this.amount = new Parameter(settings.amount);
+    this.offset = new Parameter(settings.offset);
   }
 
   getValue(time, releaseTime) {
@@ -44,21 +48,21 @@ class Envelope {
     }
     time *= 1000;
     if(time < this.delay.value) {
-      value = 0;
+      value = this.offset.value;
       return lerp(value, 0, releaseAmount);
     }
     time -= this.delay.value;
     if(time < this.attack.value) {
-      value = lerp(0, 1, time / this.attack.value);
+      value = lerp(0, 1, time / this.attack.value) * this.amount.value + this.offset.value;
       return lerp(value, 0, releaseAmount);
     }
     time -= this.attack.value;
     if(time < this.hold.value) {
-      value = 1;
+      value = this.amount.value;
       return lerp(value, 0, releaseAmount);
     }
     time -= this.hold.value;
-    value = lerp(1, this.sustain.value, time / this.decay.value);
+    value = lerp(1, this.sustain.value, time / this.decay.value) * this.amount.value + this.offset.value;
     return lerp(value, 0, releaseAmount);
   }
 }

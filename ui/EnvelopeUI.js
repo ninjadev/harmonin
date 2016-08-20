@@ -54,6 +54,20 @@ class EnvelopeUI {
         mapping: 'linear',
         min: 0,
         max: 1000
+      }),
+      new Knob({
+        name: 'Amount',
+        audioParam: this.envelope.amount,
+        mapping: 'linear',
+        min: 0,
+        max: 1
+      }),
+      new Knob({
+        name: 'Offset',
+        audioParam: this.envelope.offset,
+        mapping: 'linear',
+        min: 0,
+        max: 1
       })
     ];
     for(var knob of this.knobs) {
