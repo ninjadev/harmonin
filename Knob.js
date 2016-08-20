@@ -50,6 +50,9 @@
       this.value = value; 
       this.UI.input.value = (value * 100 | 0) / 100;
       this.UI.circle.style.strokeDashoffset = (1 - value) * 157 | 0;
+      if(this.callback) {
+        this.callback(value);
+      }
     }
   }
 
