@@ -104,11 +104,11 @@
     }),
     new Sampler(audioContext, {
       volume: 5,
-      filename: 'kick.wav'
+      filename: 'data/kick.wav'
     }),
     new Sampler(audioContext, {
       volume: 5,
-      filename: 'snare.wav'
+      filename: 'data/snare.wav'
     })
   ]
 
@@ -116,7 +116,7 @@
   reverbNode.connect(audioContext.destination);
   (function() {
     var request = new XMLHttpRequest();
-    request.open('GET', 'irHall.ogg', true);
+    request.open('GET', 'data/irHall.ogg', true);
     request.responseType = 'arraybuffer';
     request.onload = function() {
       audioContext.decodeAudioData(request.response, function(buffer) {
