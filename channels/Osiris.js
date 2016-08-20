@@ -2,6 +2,7 @@
 
 var BaseChannel = require('./BaseChannel');
 var Envelope = require('./Envelope');
+var Parameter = require('../utils/Parameter');
 
 function clamp(a, v, b) {
   return Math.min(b, Math.max(v, a));
@@ -19,7 +20,7 @@ function lerp(a, b, t) {
 class OscillatorSettings {
   constructor(settings) {
       this.type = settings.type;
-      this.pitch = settings.pitch;
+      this.pitch = new Parameter(settings.pitch);
   }
 }
 
@@ -45,9 +46,10 @@ class Osiris extends BaseChannel {
       new OscillatorSettings(settings.oscillator2),
       new OscillatorSettings(settings.oscillator3)
     ];
-    this.vibratoFrequency = settings.vibratoFrequency;
+    this.vibratoFrequency = new Parameter(settings.vibratoFrequency);
+    this.vibratoAmount = new Parameter(settings.vibratoAmount);
 
-    this.portamentoTime = settings.portamentoTime;
+    this.portamentoTime = new Parameter(settings.portamentoTime);
     this.currentPortamentoNote = 45;
   }
 
@@ -60,14 +62,14 @@ class Osiris extends BaseChannel {
         releaseTime = -1;
       }
 
-      if(this.portamentoTime) {
+      if(this.portamentoTime.value) {
         this.currentPortamentoNote = lerp(
           note.portamentoStart,
           note.portamentoTarget,
-          1000 * noteTime / this.portamentoTime);
+          1000 * noteTime / this.portamentoTime.value);
         for(var j = 0; j < note.oscillators.length; j++) {
         var frequency = this.noteNumberToFrequency(
-          this.oscillatorSettings[j].pitch + this.currentPortamentoNote);
+          this.oscillatorSettings[j].pitch.value + this.currentPortamentoNote);
         note.oscillators[j].frequency.value = frequency;
         }
       }
@@ -107,14 +109,14 @@ class Osiris extends BaseChannel {
     for(var settings of this.oscillatorSettings) {
       var oscillator = this.audioContext.createOscillator();
       oscillator.frequency.value = this.noteNumberToFrequency(
-          note + settings.pitch);
+          note + settings.pitch.value);
       oscillator.type = settings.type;
       oscillator.connect(filter);
       oscillator.start(time);
       var vibratoOscillator = this.audioContext.createOscillator();
       var vibratoGain = this.audioContext.createGain();
-      vibratoGain.gain.value = 2;
-      vibratoOscillator.frequency.value = this.vibratoFrequency;
+      vibratoGain.gain.value = this.vibratoAmount.value;
+      vibratoOscillator.frequency.value = this.vibratoFrequency.value;
       vibratoOscillator.start(time);
       vibratoOscillator.connect(vibratoGain);
       vibratoGain.connect(oscillator.frequency);

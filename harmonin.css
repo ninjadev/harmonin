@@ -29,11 +29,13 @@ html, body {
 
 
 .base-panel .knob-container {
+  position: relative;
   margin-right: 15px;
   margin-top: 15px;
 }
 
-.envelope-container {
+.envelope-container,
+.oscillatorsettings-container {
   border: 1px solid #253237;
   border-radius: 2px;
   padding: 15px;
@@ -41,7 +43,8 @@ html, body {
   position: relative;
 }
 
-.envelope-name {
+.envelope-name,
+.oscillatorsettings-name {
   position: absolute;
   background: #5c6b73;
   padding: 3px;
