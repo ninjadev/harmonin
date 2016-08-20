@@ -90,6 +90,12 @@ class Knob {
       this.audioParam.value = this.denormalizeValue(value);
     }
   }
+
+  update() {
+    if(!this.dragging) {
+      this.setDenormalizedValue(this.audioParam.value);
+    }
+  }
 }
 
 module.exports = Knob;

@@ -39,9 +39,7 @@ class Osiris extends BaseChannel {
     }
     this.activeNotesCount = 0;
     this.envelope = new Envelope(settings.envelope);
-    if(settings.filterEnvelope) {
-      this.filterEnvelope = new Envelope(settings.filterEnvelope);
-    }
+    this.filterEnvelope = new Envelope(settings.filterEnvelope);
     this.oscillatorSettings = [
       new OscillatorSettings(settings.oscillator1),
       new OscillatorSettings(settings.oscillator2),
@@ -79,7 +77,7 @@ class Osiris extends BaseChannel {
         note.filter.frequency.value = frequency;
       }
 
-      if(releaseTime >= this.envelope.release / 1000) {
+      if(releaseTime >= this.envelope.release.value / 1000) {
         this.notes[i--] = this.notes[--this.activeNotesCount];
         this.notes[this.activeNotesCount] = note;
         note.gain.disconnect(this.filter);
@@ -140,7 +138,7 @@ class Osiris extends BaseChannel {
       if(this.notes[i].note == note) {
         if(this.notes[i].releaseTime == -1) {
           for(var oscillator of this.notes[i].oscillators) {
-            oscillator.stop(time + (this.envelope.release / 1000));
+            oscillator.stop(time + (this.envelope.release.value / 1000));
           }
           this.notes[i].releaseTime = time;
         }

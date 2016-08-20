@@ -32,3 +32,19 @@ html, body {
   margin-right: 15px;
   margin-top: 15px;
 }
+
+.envelope-container {
+  border: 1px solid #253237;
+  border-radius: 2px;
+  padding: 15px;
+  margin: 15px 0;
+  position: relative;
+}
+
+.envelope-name {
+  position: absolute;
+  background: #5c6b73;
+  padding: 3px;
+  font-size: 14px;
+  top: -13px;
+}
