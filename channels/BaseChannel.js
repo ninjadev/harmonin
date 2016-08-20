@@ -14,16 +14,14 @@ class BaseChannel {
     this.filter.frequency.value = settings.filterFrequency || 0;
     this.filter.connect(this.outputNode);
 
-    if(settings.delay) {
-      this.delay = this.audioContext.createDelay();
-      this.delay.delayTime.value = settings.delay.time;
-      this.delayGain = this.audioContext.createGain();
-      this.delayGain.gain.value = settings.delay.feedback;
-      this.filter.connect(this.delay);
-      this.delay.connect(this.delayGain);
-      this.delayGain.connect(this.delay);
-      this.delayGain.connect(this.outputNode);
-    }
+    this.delay = this.audioContext.createDelay();
+    this.delay.delayTime.value = settings.delay ? settings.delay.time : 0;
+    this.delayGain = this.audioContext.createGain();
+    this.delayGain.gain.value = settings.delay ? settings.delay.feedback : 0;
+    this.filter.connect(this.delay);
+    this.delay.connect(this.delayGain);
+    this.delayGain.connect(this.delay);
+    this.delayGain.connect(this.outputNode);
   }
 
   tick(time) {

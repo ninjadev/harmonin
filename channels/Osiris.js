@@ -152,7 +152,6 @@ class Osiris extends BaseChannel {
     switch(id) {
       case 0:
         this.filter.frequency.value = Math.pow(value / 127, 2) * 21000;
-        this.__UI.UI.filterFrequencyKnob.setValue(this.filter.frequency.value / 21000);
         break;
     }
   }

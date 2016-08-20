@@ -4,6 +4,9 @@ var BaseChannel = require('./BaseChannel');
 
 class Sampler extends BaseChannel {
   constructor(audioContext, settings) {
+    if(!('filterFrequency' in settings)) {
+      settings.filterFrequency = 21000;
+    }
     super(audioContext, settings);
     var request = new XMLHttpRequest();
     request.open('GET', settings.filename, true);
@@ -12,7 +15,6 @@ class Sampler extends BaseChannel {
     request.onload = function() {
       that.audioContext.decodeAudioData(request.response, function(buffer) {
         that.audioBuffer = buffer;
-        that.__UI.UI.loadingStatus.innerText = 'Ready.';
       },
       function(e){console.log(e)});
     }
@@ -24,7 +26,7 @@ class Sampler extends BaseChannel {
       var source = this.audioContext.createBufferSource();
       var gain = this.audioContext.createGain();
       gain.gain.value = velocity / 127;
-      gain.connect(this.outputNode);
+      gain.connect(this.filter);
       source.buffer = this.audioBuffer;
       source.playbackRate.value = this.noteNumberToFrequency(note) / 440;
       source.connect(gain);

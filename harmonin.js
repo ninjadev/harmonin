@@ -136,9 +136,11 @@ var channelToUIMapping = {
   Sampler: SamplerUI
 };
 
+var channelUIs = [];
 for(var channel of channels) {
-  channel.__UI = new channelToUIMapping[channel.constructor.name](channel);
-  document.body.appendChild(channel.__UI.domElement);
+  var channelUI = new channelToUIMapping[channel.constructor.name](channel);
+  document.body.appendChild(channelUI.domElement);
+  channelUIs.push(channelUI);
 }
 
 for(var channel of channels) {
@@ -198,9 +200,9 @@ navigator.requestMIDIAccess({}).then(function(midiAccess) {
 })
 
 function uiLoop() {
-  requestAnimationFrame(uiLoop);
-  for(channel of channels) {
-    channel.__UI.update();
+  for(channelUI of channelUIs) {
+    channelUI.update();
   }
+  requestAnimationFrame(uiLoop);
 }
 requestAnimationFrame(uiLoop);
