@@ -8,10 +8,10 @@ var SamplerUI = require('./ui/SamplerUI');
 var audioContext = new AudioContext();
 
 var channels = [
-  new Osiris(audioContext, require('./presets/osiris/ClubStonk')),
-  new Osiris(audioContext, require('./presets/osiris/Mellosynth')),
-  new Osiris(audioContext, require('./presets/osiris/WidePad')),
-  new Osiris(audioContext, require('./presets/osiris/SquarePluck')),
+  new Osiris(audioContext, require('./presets/osiris/MotionBass')),
+  new Osiris(audioContext, require('./presets/osiris/MotionChords')),
+  new Osiris(audioContext, require('./presets/osiris/MotionLead')),
+  new Osiris(audioContext, require('./presets/osiris/MotionBell')),
   new Sampler(audioContext, {
     volume: 5,
     filename: 'data/kick.wav'

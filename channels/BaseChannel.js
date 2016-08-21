@@ -13,6 +13,14 @@ class BaseChannel {
     this.filter.type = settings.filterType;
     this.filter.frequency.value = settings.filterFrequency || 0;
     this.filter.connect(this.outputNode);
+    this.accumulator = this.filter;
+
+    if(settings.waveshaper) {
+      this.waveshaper = audioContext.createWaveShaper();
+      this.waveshaper.curve = settings.waveshaper.curve;
+      this.accumulator = this.waveshaper;
+      this.waveshaper.connect(this.filter);
+    }
 
     this.delay = this.audioContext.createDelay();
     this.delay.delayTime.value = settings.delay ? settings.delay.time : 0;
