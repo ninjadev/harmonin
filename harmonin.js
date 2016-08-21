@@ -8,7 +8,7 @@ var SamplerUI = require('./ui/SamplerUI');
 var audioContext = new AudioContext();
 
 var channels = [
-  new Osiris(audioContext, require('./presets/osiris/UltraNiceAnalogueStyleSaw')),
+  new Osiris(audioContext, require('./presets/osiris/ClubStonk')),
   new Osiris(audioContext, require('./presets/osiris/Mellosynth')),
   new Osiris(audioContext, require('./presets/osiris/WidePad')),
   new Osiris(audioContext, require('./presets/osiris/SquarePluck')),
