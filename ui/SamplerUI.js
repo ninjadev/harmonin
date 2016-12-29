@@ -1,13 +1,9 @@
-'use strict';
+const React = require('react');
 
-var BaseUI = require('../ui/BaseUI');
 
-class SamplerUI extends BaseUI {
-  constructor(channel) {
-    channel.settings.name = channel.settings.filename;
-    super(channel);
-    this.name = 'Sampler';
-    this.renderDOM();
+class SamplerUI extends React.Component {
+  render() {
+    return (<div />);
   }
 }
 
