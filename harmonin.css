@@ -118,3 +118,16 @@ html, body {
   width: 100%;
   display: block;
 }
+
+.oscillator-name {
+  text-transform: uppercase;
+  font-size: 20px;
+  color: #5c6b73;
+  float: left;
+  line-height: 80px;
+  vertical-align: middle;
+}
+
+.oscillator-settings-container {
+  text-align: right;
+}

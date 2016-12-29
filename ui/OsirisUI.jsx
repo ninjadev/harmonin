@@ -8,13 +8,25 @@ class OscillatorUI extends React.Component {
   render() {
     return (
       <div className="base-panel">
-        <Knob
-          name="Pitch"
-          audioParam={this.props.settings.pitch}
-          mapping="linear"
-          min={-12}
-          max={12}
-          />
+        <div className="oscillator-name">
+          {this.props.name}
+        </div>
+        <div className="oscillator-settings-container">
+          <Knob
+            name="Volume"
+            audioParam={this.props.settings.volume}
+            mapping="linear"
+            min={0}
+            max={1}
+            />
+          <Knob
+            name="Pitch"
+            audioParam={this.props.settings.pitch}
+            mapping="linear"
+            min={-12}
+            max={12}
+            />
+          </div>
       </div>
     );
   }
