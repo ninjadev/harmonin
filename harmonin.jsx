@@ -3,6 +3,7 @@ var Sampler = require('./channels/Sampler')
 const ChannelUI = require('./ui/ChannelUI');
 const React = require('react');
 const ReactDOM = require('react-dom');
+const WaveformVisualizer = require('./ui/WaveformVisualizer');
 
 import {Tabs} from 'react-tabs';
 Tabs.setUseDefaultStyles(false);
@@ -34,8 +35,11 @@ var channels = [
   })
 ]
 
+const masterOutputNode = audioContext.createGain();
+masterOutputNode.connect(audioContext.destination);
+
 var reverbNode = audioContext.createConvolver();
-reverbNode.connect(audioContext.destination);
+reverbNode.connect(masterOutputNode);
 (function() {
   var request = new XMLHttpRequest();
   request.open('GET', 'data/irHall.ogg', true);
@@ -50,7 +54,7 @@ reverbNode.connect(audioContext.destination);
 })();
 
 for(var channel of channels) {
-  channel.outputNode.connect(audioContext.destination);
+  channel.outputNode.connect(masterOutputNode);
   channel.reverbSendNode.connect(reverbNode);
 }
 
@@ -133,14 +137,44 @@ navigator.requestMIDIAccess({}).then(function(midiAccess) {
 })
 
 class Harmonin extends React.Component {
+
+  constructor() {
+    super();
+    this.state = {
+      masterVisualizerHeight: 0
+    };
+  }
+
+  resize() {
+    this.setState({
+      masterVisualizerHeight: window.innerHeight - 30
+    });
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize',  e => { this.resize(); });
+    this.resize();
+  }
+
   render() {
     return (
       <div>
-      {channels.map(channel =>
-        <ChannelUI
-          channel={channel}
-          key={channel.id}
-          />)}
+        {channels.map(channel =>
+          <ChannelUI
+            channel={channel}
+            key={channel.id}
+            />)}
+
+        <div
+          className="master-visualizer visualizer"
+          ref={ref => this.masterVisualizerWrapper = ref}
+          >
+          <WaveformVisualizer
+            audioNode={masterOutputNode}
+            width={100}
+            height={this.state.masterVisualizerHeight}
+          />
+        </div>
       </div>
     );
   }
