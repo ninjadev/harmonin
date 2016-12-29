@@ -1,84 +1,71 @@
-'use strict';
+var Parameter = require('../utils/Parameter');
+var Knob = require('./Knob.jsx');
+const React = require('react');
 
-var Parameter = require('../utils/Parameter.js');
-var Knob = require('./Knob.js');
 
-class EnvelopeUI {
-  constructor(settings) {
-    this.envelope = settings.envelope;
-    this.domElement = document.createElement('div');
-    this.domElement.classList.add('envelope-container');
-    this.domElement.classList.add('base-panel');
-    this.domElement.innerHTML = `
-      <div class="envelope-name">${settings.name}</div>
-    `;
-    this.knobs = [
-      new Knob({
-        name: 'Delay',
-        audioParam: this.envelope.delay,
-        mapping: 'linear',
-        min: 0,
-        max: 1000
-      }),
-      new Knob({
-        name: 'Attack',
-        audioParam: this.envelope.attack,
-        mapping: 'linear',
-        min: 0,
-        max: 1000
-      }),
-      new Knob({
-        name: 'Hold',
-        audioParam: this.envelope.hold,
-        mapping: 'linear',
-        min: 0,
-        max: 1000
-      }),
-      new Knob({
-        name: 'Decay',
-        audioParam: this.envelope.decay,
-        mapping: 'linear',
-        min: 0,
-        max: 1000
-      }),
-      new Knob({
-        name: 'Sustain',
-        audioParam: this.envelope.sustain,
-        mapping: 'linear',
-        min: 0,
-        max: 1
-      }),
-      new Knob({
-        name: 'Release',
-        audioParam: this.envelope.release,
-        mapping: 'linear',
-        min: 0,
-        max: 1000
-      }),
-      new Knob({
-        name: 'Amount',
-        audioParam: this.envelope.amount,
-        mapping: 'linear',
-        min: 0,
-        max: 1
-      }),
-      new Knob({
-        name: 'Offset',
-        audioParam: this.envelope.offset,
-        mapping: 'linear',
-        min: 0,
-        max: 1
-      })
-    ];
-    for(var knob of this.knobs) {
-      this.domElement.appendChild(knob.domElement);
-    }
-  }
+class EnvelopeUI extends React.Component {
 
-  update() {
-    for(var knob of this.knobs) {
-      knob.update();
-    }
+  render() {
+    return (
+      <div className="base-panel">
+        <Knob
+          name="Delay"
+          audioParam={this.props.envelope.delay}
+          mapping="linear"
+          min={0}
+          max={1000}
+          />
+        <Knob
+          name="Attack"
+          audioParam={this.props.envelope.attack}
+          mapping="linear"
+          min={0}
+          max={1000}
+          />
+        <Knob
+          name="Hold"
+          audioParam={this.props.envelope.hold}
+          mapping="linear"
+          min={0}
+          max={1000}
+          />
+        <Knob
+          name="Decay"
+          audioParam={this.props.envelope.decay}
+          mapping="linear"
+          min={0}
+          max={1000}
+          />
+        <Knob
+          name="Sustain"
+          audioParam={this.props.envelope.sustain}
+          mapping="linear"
+          min={0}
+          max={1}
+          />
+        <Knob
+          name="Release"
+          audioParam={this.props.envelope.release}
+          mapping="linear"
+          min={0}
+          max={1000}
+          />
+        <Knob
+          name="Amount"
+          audioParam={this.props.envelope.amount}
+          mapping="linear"
+          min={0}
+          max={1}
+          />
+        <Knob
+          name="Offset"
+          audioParam={this.props.envelope.offset}
+          mapping="linear"
+          min={0}
+          max={1}
+          />
+      </div>
+    );
   }
 }
 

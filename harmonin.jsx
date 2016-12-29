@@ -1,9 +1,11 @@
-'use strict';
-
 var Osiris = require('./channels/Osiris');
 var Sampler = require('./channels/Sampler')
-var OsirisUI = require('./ui/OsirisUI');
-var SamplerUI = require('./ui/SamplerUI');
+const ChannelUI = require('./ui/ChannelUI');
+const React = require('react');
+const ReactDOM = require('react-dom');
+
+import {Tabs} from 'react-tabs';
+Tabs.setUseDefaultStyles(false);
 
 var audioContext = new AudioContext();
 
@@ -47,18 +49,6 @@ reverbNode.connect(audioContext.destination);
   request.send();
 })();
 
-var channelToUIMapping = {
-  Osiris: OsirisUI,
-  Sampler: SamplerUI
-};
-
-var channelUIs = [];
-for(var channel of channels) {
-  var channelUI = new channelToUIMapping[channel.constructor.name](channel);
-  document.body.appendChild(channelUI.domElement);
-  channelUIs.push(channelUI);
-}
-
 for(var channel of channels) {
   channel.outputNode.connect(audioContext.destination);
   channel.reverbSendNode.connect(reverbNode);
@@ -76,13 +66,52 @@ eventTimingLoopNode.onaudioprocess = function() {
   var step = 256 / audioContext.sampleRate;
   while(deltaTime >= step) {
     deltaTime -= step;
-    tick(time);
+    tick(time, step);
   }
 };
 
-function tick(time) {
+var midiFile;
+
+function tick(time, stepSize) {
+  if(midiFile) {
+    midiFile.play_forward(stepSize * 1000);
+  }
   for(var channel of channels) {
     channel.tick(time);
+  }
+}
+
+/*
+var oReq = new XMLHttpRequest();
+oReq.open("GET", "/harmonin2.mid");
+oReq.responseType = "arraybuffer";
+oReq.onload = function (oEvent) {
+  var arrayBuffer = oReq.response;
+  if (arrayBuffer) {
+    var byteArray = new Uint8Array(arrayBuffer);
+    midiFile = new Midi(byteArray);
+    midiFile.add_callback(e => {
+      onMidiEvent(e.midi_channel, e.type, e.note_number, e.velocity);
+    });
+  }
+};
+
+oReq.send(null);
+*/
+function onMidiEvent(channel, type, note, velocity) {
+
+  switch(type) {
+    case 0x9:
+      channels[channel].noteOn(note, velocity);
+      break;
+    case 0x8:
+      channels[channel].noteOff(note, velocity);
+      break;
+    case 0xB:
+      if(channel in channels) {
+        channels[channel].mod(note, velocity);
+      }
+      break;
   }
 }
 
@@ -90,23 +119,12 @@ navigator.requestMIDIAccess({}).then(function(midiAccess) {
   var midi = midiAccess;
 
   for(var input of midi.inputs.values()) {
-    input.addEventListener('midimessage', function(e) {
+    input.addEventListener('midimessage', e => {
       var channel = e.data[0] & 0xf;
-      var type = e.data[0] & 0xf0;
+      var type = (e.data[0] & 0xf0) >> 4;
       var note = e.data[1];
       var velocity = e.data[2];
-
-      switch(type) {
-        case 144:
-          channels[channel].noteOn(note, velocity);
-          break;
-        case 128:
-          channels[channel].noteOff(note, velocity);
-          break;
-        case 176:
-          channels[channel].mod(note, velocity);
-          break;
-      }
+      onMidiEvent(channel, type, note, velocity);
     });
   }
 
@@ -114,10 +132,18 @@ navigator.requestMIDIAccess({}).then(function(midiAccess) {
   console.log(e);  
 })
 
-function uiLoop() {
-  for(channelUI of channelUIs) {
-    channelUI.update();
+class Harmonin extends React.Component {
+  render() {
+    return (
+      <div>
+      {channels.map(channel =>
+        <ChannelUI
+          channel={channel}
+          key={channel.id}
+          />)}
+      </div>
+    );
   }
-  requestAnimationFrame(uiLoop);
 }
-requestAnimationFrame(uiLoop);
+
+ReactDOM.render(<Harmonin />, document.querySelector('#container'));

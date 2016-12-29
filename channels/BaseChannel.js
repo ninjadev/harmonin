@@ -2,6 +2,7 @@
 
 class BaseChannel {
   constructor(audioContext, settings) {
+    this.id = Math.random() * 1e9 | 0;
     this.settings = settings;
     this.audioContext = audioContext;
     this.outputNode = this.audioContext.createGain();
@@ -14,6 +15,9 @@ class BaseChannel {
     this.filter.frequency.value = settings.filterFrequency || 0;
     this.filter.connect(this.outputNode);
     this.accumulator = this.filter;
+
+    this.outputAnalyserNode = this.audioContext.createAnalyser();
+    this.outputNode.connect(this.outputAnalyserNode);
 
     if(settings.waveshaper) {
       this.waveshaper = audioContext.createWaveShaper();
