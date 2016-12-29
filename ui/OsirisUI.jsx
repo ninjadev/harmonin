@@ -36,56 +36,64 @@ class OsirisUI extends React.Component {
         </TabList>
 
         <TabPanel>
-          <OscillatorUI
-            name="Oscillator 1"
-            settings={this.props.channel.oscillatorSettings[0]}
-            />
-          <OscillatorUI
-            name="Oscillator 2"
-            settings={this.props.channel.oscillatorSettings[1]}
-            />
-          <OscillatorUI
-            name="Oscillator 3"
-            settings={this.props.channel.oscillatorSettings[2]}
-            />
+          <div className="inverted">
+            <OscillatorUI
+              name="Oscillator 1"
+              settings={this.props.channel.oscillatorSettings[0]}
+              />
+            <OscillatorUI
+              name="Oscillator 2"
+              settings={this.props.channel.oscillatorSettings[1]}
+              />
+            <OscillatorUI
+              name="Oscillator 3"
+              settings={this.props.channel.oscillatorSettings[2]}
+              />
+          </div>
         </TabPanel>
 
         <TabPanel>
-          <EnvelopeUI
-            name="Volume envelope"
-            envelope={this.props.channel.envelope}
-            />
+          <div className="inverted">
+            <EnvelopeUI
+              name="Volume envelope"
+              envelope={this.props.channel.envelope}
+              />
+          </div>
         </TabPanel>
 
         <TabPanel>
-          <EnvelopeUI
-            name="Filter envelope"
-            envelope={this.props.channel.filterEnvelope}
-            />
+          <div className="inverted">
+            <EnvelopeUI
+              name="Filter envelope"
+              envelope={this.props.channel.filterEnvelope}
+              />
+          </div>
         </TabPanel>
 
         <TabPanel>
-          <Knob
-            name="Portamento"
-            audioParam={this.props.channel.portamentoTime}
-            mapping="linear"
-            min={0}
-            max={1000}
-            />
-          <Knob
-            name="Vibrato frq."
-            audioParam={this.props.channel.vibratoFrequency}
-            mapping="square"
-            min={0}
-            max={100}
-            />
-          <Knob
-            name="Vibrato amount"
-            audioParam={this.props.channel.vibratoAmount}
-            mapping="square"
-            min={0}
-            max={12}
-            />
+          <div className="inverted">
+            <Knob
+              name="Portamento"
+              audioParam={this.props.channel.portamentoTime}
+              mapping="linear"
+              min={0}
+              max={1000}
+              />
+            <Knob
+              name="Vibrato frq."
+              audioParam={this.props.channel.vibratoFrequency}
+              mapping="square"
+              min={0}
+              max={100}
+              />
+            <Knob
+              name="Vibrato amount"
+              audioParam={this.props.channel.vibratoAmount}
+              mapping="square"
+              min={0}
+              max={12}
+              />
+          </div>
         </TabPanel>
       </Tabs>
       </div>

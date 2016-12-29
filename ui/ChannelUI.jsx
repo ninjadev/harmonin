@@ -2,6 +2,7 @@ const React = require('react');
 const Knob = require('./Knob.jsx');
 const OsirisUI = require('./OsirisUI');
 const SamplerUI = require('./SamplerUI');
+const WaveformVisualizer = require('./WaveformVisualizer');
 
 
 class ChannelUI extends React.Component {
@@ -14,27 +15,7 @@ class ChannelUI extends React.Component {
     };
   }
 
-  updateVisualizer() {
-    requestAnimationFrame(() => this.updateVisualizer());
-    this.props.channel.outputAnalyserNode.getFloatTimeDomainData(this.visualiserArray);
-    let max = 0;
-    for(let i = 0; i < this.visualiserArray.length; i++) {
-      max = Math.max(max, Math.abs(this.visualiserArray[i]));
-    }
-    this.visualizerCtx.drawImage(this.visualizerCanvas, 0, 1);
-    this.visualizerCtx.fillStyle = '#3b4449';
-    this.visualizerCtx.fillRect(0, 0, this.visualizerCanvas.width, 1);
-    this.visualizerCtx.fillStyle = '#c6f54c';
-    this.visualizerCtx.fillRect(
-        this.visualizerCanvas.width / 2 - this.visualizerCanvas.width * max / 2,
-        0,
-        this.visualizerCanvas.width * max,
-        1);
-  }
-
   componentDidMount() {
-    this.visualiserArray = new Float32Array(this.props.channel.outputAnalyserNode.fftSize);
-    this.visualizerCtx = this.visualizerCanvas.getContext('2d');
     const titleB = this.props.channel.constructor.name == 'Sampler'
                  ? this.props.channel.settings.filename
                  : this.props.channel.settings.name
@@ -42,7 +23,6 @@ class ChannelUI extends React.Component {
       titleA: this.props.channel.constructor.name,
       titleB: titleB
     });
-    this.updateVisualizer();
   }
 
   render() {
@@ -54,10 +34,10 @@ class ChannelUI extends React.Component {
         </div>
         <div className="base-panel">
           <div className="visualizer">
-            <canvas
-              ref={canvas => this.visualizerCanvas = canvas}
+            <WaveformVisualizer
               width="20"
               height="50"
+              audioNode={this.props.channel.outputNode}
               />
           </div>
           <Knob
