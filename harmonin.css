@@ -54,6 +54,7 @@ html, body {
 
 .base-panel {
   padding-left: 35px;
+  padding-right: 35px;
   position: relative;
 }
 
@@ -96,6 +97,7 @@ html, body {
 .ReactTabs__TabPanel {
   background: #253237;
   border-radius: 2px;
+  padding: 15px 0;
 }
 
 .master-visualizer {
@@ -103,4 +105,16 @@ html, body {
   top: 15px;
   right: 15px;
   bottom: 15px;
+}
+
+.envelope-visualizer {
+  overflow: hidden;
+  background: #3b4449;
+  border: 1px solid #1d262b;
+  border-radius: 2px;
+}
+
+.envelope-visualizer canvas {
+  width: 100%;
+  display: block;
 }

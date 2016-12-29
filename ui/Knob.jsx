@@ -87,6 +87,10 @@ class Knob extends React.Component {
     if(shouldUpdateAudioParam) {
       this.props.audioParam.value = this.denormalizeValue(value);
     }
+
+    if(this.props.onChange) {
+      this.props.onChange(this.props.audioParam.value);
+    }
   }
 
   render() {
