@@ -95,20 +95,31 @@ class Knob extends React.Component {
     e.preventDefault();
   }
 
+  onDoubleClick(e) {
+    this.input.focus();
+  }
+
   onTouchStart(e) {
     this.startValue = this.state.value;
     this.dragOffset = e.touches[e.touches.length - 1].clientY;
     this.currentTouchId = e.touches[e.touches.length - 1].identifier;
   }
 
-  setDenormalizedValue(denormalizedValue) {
-    this.setValue(this.normalizeValue(denormalizedValue));
+  setDenormalizedValue(denormalizedValue, shouldUpdateAudioParam, shouldInputValue) {
+    this.setState({
+      value: this.normalizeValue(denormalizedValue)
+    });
+    if(shouldUpdateAudioParam) {
+      this.props.audioParam.value = denormalizedValue;
+    }
+    if(this.props.onChange) {
+      this.props.onChange(this.props.audioParam.value);
+    }
   }
 
   setValue(value, shouldUpdateAudioParam) {
     value = Math.max(0, value);
     value = Math.min(1, value);
-    value = (value * 127 | 0) / 127;
     this.setState({
       value: value
     });
@@ -136,13 +147,13 @@ class Knob extends React.Component {
         className="knob-container"
         onMouseDown={e => this.onMouseDown(e)}
         onTouchStart={e => this.onTouchStart(e)}
+        onDoubleClick={e => this.onDoubleClick(e)}
         >
         <div className="knob">
           <input
-            min="0"
-            max="1"
             ref={input => this.input = input}
             value={this.state.inputValue}
+            onChange={e => { this.setState({inputValue: e.target.value}); this.setDenormalizedValue(+e.target.value, true, false)}}
             />
           <svg viewBox="0 0 50 50">
             <circle
@@ -150,7 +161,7 @@ class Knob extends React.Component {
               cy="25"
               r="23"
               style={{
-                strokeDashoffset: (1 - this.state.value) * 157 | 0
+                strokeDashoffset: (1 - this.state.value) * 144.51326206513048
               }}
               />
           </svg>
