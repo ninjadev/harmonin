@@ -34,8 +34,8 @@ svg circle {
   fill: none;
   stroke: #9db4c0;
   stroke-width: 4;
-  stroke-dasharray: 157;
-  stroke-dashoffset: 157;
+  stroke-dasharray: 144.51326206513048;
+  stroke-dashoffset: 0;
 }
 
 .knob input {

@@ -47,8 +47,35 @@ class Knob extends React.Component {
     this.dragging = false;
     this.startValue = 0;
     this.dragOffset = 0;
+
     document.body.addEventListener('mouseup', () => {
       this.dragging = false;
+    });
+
+    document.body.addEventListener('touchmove', e => {
+      for(let i = 0; i < e.touches.length; i++) {
+        if(e.touches[i].identifier == this.currentTouchId) {
+          e.preventDefault();
+          var shouldUpdateAudioParam = true;
+          this.setValue(
+            this.startValue + (this.dragOffset - e.touches[i].clientY) / 127,
+            shouldUpdateAudioParam);
+          break;
+        }
+      }
+    });
+
+    document.body.addEventListener('touchend', e => {
+      if(!e.touches.length) {
+        this.currentTouchId = undefined;
+      }
+      for(let i = 0; i < e.touches.length; i++) {
+        console.log(e.touches[i].identifier, this.currentTouchId);
+        if(e.touches[i].identifier == this.currentTouchId) {
+          this.currentTouchId = undefined;
+          break;
+        }
+      }
     });
 
     document.body.addEventListener('mousemove', e => {
@@ -68,14 +95,31 @@ class Knob extends React.Component {
     e.preventDefault();
   }
 
-  setDenormalizedValue(denormalizedValue) {
-    this.setValue(this.normalizeValue(denormalizedValue));
+  onDoubleClick(e) {
+    this.input.focus();
+  }
+
+  onTouchStart(e) {
+    this.startValue = this.state.value;
+    this.dragOffset = e.touches[e.touches.length - 1].clientY;
+    this.currentTouchId = e.touches[e.touches.length - 1].identifier;
+  }
+
+  setDenormalizedValue(denormalizedValue, shouldUpdateAudioParam, shouldInputValue) {
+    this.setState({
+      value: this.normalizeValue(denormalizedValue)
+    });
+    if(shouldUpdateAudioParam) {
+      this.props.audioParam.value = denormalizedValue;
+    }
+    if(this.props.onChange) {
+      this.props.onChange(this.props.audioParam.value);
+    }
   }
 
   setValue(value, shouldUpdateAudioParam) {
     value = Math.max(0, value);
     value = Math.min(1, value);
-    value = (value * 127 | 0) / 127;
     this.setState({
       value: value
     });
@@ -102,13 +146,14 @@ class Knob extends React.Component {
       <div
         className="knob-container"
         onMouseDown={e => this.onMouseDown(e)}
+        onTouchStart={e => this.onTouchStart(e)}
+        onDoubleClick={e => this.onDoubleClick(e)}
         >
         <div className="knob">
           <input
-            min="0"
-            max="1"
             ref={input => this.input = input}
             value={this.state.inputValue}
+            onChange={e => { this.setState({inputValue: e.target.value}); this.setDenormalizedValue(+e.target.value, true, false)}}
             />
           <svg viewBox="0 0 50 50">
             <circle
@@ -116,7 +161,7 @@ class Knob extends React.Component {
               cy="25"
               r="23"
               style={{
-                strokeDashoffset: (1 - this.state.value) * 157 | 0
+                strokeDashoffset: (1 - this.state.value) * 144.51326206513048
               }}
               />
           </svg>
