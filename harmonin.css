@@ -177,3 +177,8 @@ html, body {
 .load-preset-button {
   float: right;
 }
+
+canvas.piano {
+  margin: 0 auto;
+  display: block;
+}

@@ -2,6 +2,7 @@ var Knob = require('./Knob.jsx');
 var EnvelopeUI = require('./EnvelopeUI');
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 const React = require('react');
+const Piano = require('./Piano');
 
 
 class OscillatorUI extends React.Component {
@@ -146,6 +147,7 @@ class OsirisUI extends React.Component {
           <Tab>VOLUME ENV.</Tab>
           <Tab>FILTER ENV.</Tab>
           <Tab>MISC.</Tab>
+          <Tab>PIANO</Tab>
         </TabList>
 
         <TabPanel>
@@ -207,6 +209,14 @@ class OsirisUI extends React.Component {
                 min={0}
                 max={12}
                 />
+            </div>
+          </div>
+        </TabPanel>
+
+        <TabPanel>
+          <div className="inverted">
+            <div className="base-panel">
+              <Piano channel={this.props.channel} />
             </div>
           </div>
         </TabPanel>
