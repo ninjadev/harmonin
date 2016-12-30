@@ -132,7 +132,8 @@ html, body {
   text-align: right;
 }
 
-.waveform-selector-button {
+.waveform-selector-button,
+.filter-selector-button {
   margin-bottom: 23px;
   width: 40px;
   height: 30px;
@@ -154,10 +155,23 @@ html, body {
   border-radius: 0 2px 2px 0;
 }
 
+.filter-selector-button.lowpass {
+  border-radius: 2px 0 0 2px;
+  border-left: 1px solid #253237;
+}
+
+.filter-selector-button.bandpass {
+  border-radius: 0 2px 2px 0;
+}
+
 .waveform-selector-button.selected {
   background: #253237;
   color: #5c6b73;
   border-color: #5c6b73;
+}
+
+.filter-selector-button.selected {
+
 }
 
 .load-preset-button {
