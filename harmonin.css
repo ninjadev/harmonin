@@ -131,3 +131,31 @@ html, body {
 .oscillator-settings-container {
   text-align: right;
 }
+
+.waveform-selector-button {
+  margin-bottom: 23px;
+  width: 40px;
+  height: 30px;
+  cursor: pointer;
+  background: #5c6b73;
+  display: inline-block;
+  border: 1px solid #253237;
+  border-left: 0;
+}
+
+.waveform-selector-button.sine {
+  margin-left: 15px;
+  border-radius: 2px 0 0 2px;
+  border-left: 1px solid #253237;
+}
+
+.waveform-selector-button.triangle {
+  margin-right: 15px;
+  border-radius: 0 2px 2px 0;
+}
+
+.waveform-selector-button.selected {
+  background: #253237;
+  color: #5c6b73;
+  border-color: #5c6b73;
+}
