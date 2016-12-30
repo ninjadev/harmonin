@@ -47,8 +47,35 @@ class Knob extends React.Component {
     this.dragging = false;
     this.startValue = 0;
     this.dragOffset = 0;
+
     document.body.addEventListener('mouseup', () => {
       this.dragging = false;
+    });
+
+    document.body.addEventListener('touchmove', e => {
+      for(let i = 0; i < e.touches.length; i++) {
+        if(e.touches[i].identifier == this.currentTouchId) {
+          e.preventDefault();
+          var shouldUpdateAudioParam = true;
+          this.setValue(
+            this.startValue + (this.dragOffset - e.touches[i].clientY) / 127,
+            shouldUpdateAudioParam);
+          break;
+        }
+      }
+    });
+
+    document.body.addEventListener('touchend', e => {
+      if(!e.touches.length) {
+        this.currentTouchId = undefined;
+      }
+      for(let i = 0; i < e.touches.length; i++) {
+        console.log(e.touches[i].identifier, this.currentTouchId);
+        if(e.touches[i].identifier == this.currentTouchId) {
+          this.currentTouchId = undefined;
+          break;
+        }
+      }
     });
 
     document.body.addEventListener('mousemove', e => {
@@ -66,6 +93,12 @@ class Knob extends React.Component {
     this.startValue = this.state.value;
     this.dragOffset = e.clientY;
     e.preventDefault();
+  }
+
+  onTouchStart(e) {
+    this.startValue = this.state.value;
+    this.dragOffset = e.touches[e.touches.length - 1].clientY;
+    this.currentTouchId = e.touches[e.touches.length - 1].identifier;
   }
 
   setDenormalizedValue(denormalizedValue) {
@@ -102,6 +135,7 @@ class Knob extends React.Component {
       <div
         className="knob-container"
         onMouseDown={e => this.onMouseDown(e)}
+        onTouchStart={e => this.onTouchStart(e)}
         >
         <div className="knob">
           <input
