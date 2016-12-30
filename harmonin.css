@@ -159,3 +159,7 @@ html, body {
   color: #5c6b73;
   border-color: #5c6b73;
 }
+
+.load-preset-button {
+  float: right;
+}

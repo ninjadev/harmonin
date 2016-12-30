@@ -57,6 +57,25 @@ class Osiris extends BaseChannel {
     this.pitchBendAmount = 2;
   }
 
+  loadPreset(settings) {
+    super.loadPreset(settings);
+    this.envelope = new Envelope(settings.envelope);
+    this.filterEnvelope = new Envelope(settings.filterEnvelope);
+    this.oscillatorSettings = [
+      new OscillatorSettings(settings.oscillator1),
+      new OscillatorSettings(settings.oscillator2),
+      new OscillatorSettings(settings.oscillator3)
+    ];
+    this.vibratoFrequency = new Parameter(settings.vibratoFrequency);
+    this.vibratoAmount = new Parameter(settings.vibratoAmount);
+
+    this.portamentoTime = new Parameter(settings.portamentoTime);
+    this.currentPortamentoNote = 45;
+
+    this.pitchBend = new Parameter(0);
+    this.pitchBendAmount = 2;
+  }
+
   tick(time) {
     for(var i = 0; i < this.activeNotesCount; i++) {
       var note = this.notes[i];

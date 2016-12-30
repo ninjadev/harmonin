@@ -28,6 +28,10 @@ class Knob extends React.Component {
     return this.denormalizeLinear(Math.pow(normalizedValue, 2));
   }
 
+  componentWillReceiveProps(newProps) {
+    this.setValue(this.normalizeValue(this.props.audioParam.value));
+  }
+
   componentDidMount() {
     this.denormalizeValue = {
       linear: this.denormalizeLinear,
