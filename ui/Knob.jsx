@@ -63,7 +63,7 @@ class Knob extends React.Component {
           e.preventDefault();
           var shouldUpdateAudioParam = true;
           this.setValue(
-            this.startValue + (this.dragOffset - e.touches[i].clientY) / 127,
+            this.startValue + (this.dragOffset - e.touches[i].clientY) / 127 / 2,
             shouldUpdateAudioParam);
           break;
         }
