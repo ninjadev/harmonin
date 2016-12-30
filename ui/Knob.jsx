@@ -32,6 +32,11 @@ class Knob extends React.Component {
     this.setValue(this.normalizeValue(this.props.audioParam.value));
   }
 
+  update() {
+    this.setValue(this.normalizeValue(this.props.audioParam.value));
+    this.forceUpdate();
+  }
+
   componentDidMount() {
     this.denormalizeValue = {
       linear: this.denormalizeLinear,

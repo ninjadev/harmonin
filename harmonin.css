@@ -176,6 +176,7 @@ html, body {
 
 .load-preset-button {
   float: right;
+  cursor: pointer;
 }
 
 canvas.piano {

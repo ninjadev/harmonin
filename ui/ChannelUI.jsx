@@ -122,6 +122,12 @@ class ChannelUI extends React.Component {
     });
   }
 
+  mod() {
+    if(this.filterFrequencyKnob) {
+      this.filterFrequencyKnob.update();
+    }
+  }
+
   render() {
     return (
       <div className="channel-container">
@@ -151,6 +157,7 @@ class ChannelUI extends React.Component {
             mapping="square"
             min={0}
             max={21000}
+            ref={filterFrequencyKnob => this.filterFrequencyKnob = filterFrequencyKnob }
             />
         {['lowpass', 'highpass', 'bandpass'].map((type, index) => {
           return (
