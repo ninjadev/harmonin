@@ -19,9 +19,9 @@ function lerp(a, b, t) {
 
 class OscillatorSettings {
   constructor(settings) {
-      this.type = settings.type;
+      this.type = new Parameter(settings.type);
       this.pitch = new Parameter(settings.pitch);
-      this.volume = settings.volume;
+      this.volume = new Parameter(settings.volume);
   }
 }
 
@@ -40,6 +40,25 @@ class Osiris extends BaseChannel {
       });
     }
     this.activeNotesCount = 0;
+    this.envelope = new Envelope(settings.envelope);
+    this.filterEnvelope = new Envelope(settings.filterEnvelope);
+    this.oscillatorSettings = [
+      new OscillatorSettings(settings.oscillator1),
+      new OscillatorSettings(settings.oscillator2),
+      new OscillatorSettings(settings.oscillator3)
+    ];
+    this.vibratoFrequency = new Parameter(settings.vibratoFrequency);
+    this.vibratoAmount = new Parameter(settings.vibratoAmount);
+
+    this.portamentoTime = new Parameter(settings.portamentoTime);
+    this.currentPortamentoNote = 45;
+
+    this.pitchBend = new Parameter(0);
+    this.pitchBendAmount = 2;
+  }
+
+  loadPreset(settings) {
+    super.loadPreset(settings);
     this.envelope = new Envelope(settings.envelope);
     this.filterEnvelope = new Envelope(settings.filterEnvelope);
     this.oscillatorSettings = [
@@ -115,8 +134,8 @@ class Osiris extends BaseChannel {
       oscillator.frequency.value = this.noteNumberToFrequency(
           note + settings.pitch.value);
       var oscillatorGain = this.audioContext.createGain();
-      oscillatorGain.gain.value = settings.volume;
-      oscillator.type = settings.type;
+      oscillatorGain.gain.value = settings.volume.value;
+      oscillator.type = settings.type.value;
       oscillator.connect(oscillatorGain);
       oscillatorGain.connect(filter);
       oscillator.start(time);

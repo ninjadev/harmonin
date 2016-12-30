@@ -3,37 +3,31 @@
 class BaseChannel {
   constructor(audioContext, settings) {
     this.id = Math.random() * 1e9 | 0;
-    this.settings = settings;
     this.audioContext = audioContext;
     this.outputNode = this.audioContext.createGain();
-    this.outputNode.gain.value = 0.1 * settings.volume;
     this.reverbSendNode = this.audioContext.createGain();
-    this.reverbSendNode.gain.value = settings.reverb || 0;
     this.outputNode.connect(this.reverbSendNode);
     this.filter = this.audioContext.createBiquadFilter();
-    this.filter.type = settings.filterType;
-    this.filter.frequency.value = settings.filterFrequency || 0;
     this.filter.connect(this.outputNode);
     this.accumulator = this.filter;
-
-    this.outputAnalyserNode = this.audioContext.createAnalyser();
-    this.outputNode.connect(this.outputAnalyserNode);
-
-    if(settings.waveshaper) {
-      this.waveshaper = audioContext.createWaveShaper();
-      this.waveshaper.curve = settings.waveshaper.curve;
-      this.accumulator = this.waveshaper;
-      this.waveshaper.connect(this.filter);
-    }
-
     this.delay = this.audioContext.createDelay();
-    this.delay.delayTime.value = settings.delay ? settings.delay.time : 0;
     this.delayGain = this.audioContext.createGain();
-    this.delayGain.gain.value = settings.delay ? settings.delay.feedback : 0;
     this.filter.connect(this.delay);
     this.delay.connect(this.delayGain);
     this.delayGain.connect(this.delay);
     this.delayGain.connect(this.outputNode);
+    this.loadPreset(settings);
+  }
+
+  loadPreset(settings) {
+    this.settings = settings;
+    this.outputNode.gain.value = 0.1 * settings.volume;
+    this.reverbSendNode.gain.value = settings.reverb || 0;
+    this.filter.type = settings.filterType;
+    this.filter.frequency.value = settings.filterFrequency || 0;
+    this.accumulator = this.filter;
+    this.delay.delayTime.value = settings.delay ? settings.delay.time : 0;
+    this.delayGain.gain.value = settings.delay ? settings.delay.feedback : 0;
   }
 
   tick(time) {

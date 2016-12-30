@@ -5,6 +5,18 @@ const SamplerUI = require('./SamplerUI');
 const WaveformVisualizer = require('./WaveformVisualizer');
 
 
+const presets = [
+  require('../presets/osiris/ClubStonk'),
+  require('../presets/osiris/Mellosynth'),
+  require('../presets/osiris/MotionBass'),
+  require('../presets/osiris/MotionBell'),
+  require('../presets/osiris/MotionChords'),
+  require('../presets/osiris/MotionLead'),
+  require('../presets/osiris/SquarePluck'),
+  require('../presets/osiris/UltraNiceAnalogueStyleSaw'),
+  require('../presets/osiris/WidePad')
+];
+
 class ChannelUI extends React.Component {
 
   constructor() {
@@ -15,10 +27,24 @@ class ChannelUI extends React.Component {
     };
   }
 
+  loadPreset(preset) {
+    this.props.channel.loadPreset(preset);
+    this.updateTitle();
+    this.forceUpdate();
+  }
+
+  loadPresetClicked(event) {
+    this.loadPreset(presets[Math.random() * presets.length | 0]);
+  }
+
   componentDidMount() {
+    this.updateTitle();
+  }
+
+  updateTitle() {
     const titleB = this.props.channel.constructor.name == 'Sampler'
                  ? this.props.channel.settings.filename
-                 : this.props.channel.settings.name
+                 : this.props.channel.settings.name;
     this.setState({
       titleA: this.props.channel.constructor.name,
       titleB: titleB
@@ -28,6 +54,12 @@ class ChannelUI extends React.Component {
   render() {
     return (
       <div className="channel-container">
+        <div
+          className="load-preset-button"
+          onClick={e => this.loadPresetClicked(e)}
+          >
+          Load preset
+        </div>
         <div className="name">
           {this.state.titleA}
           <span className="patch-name">{this.state.titleB}</span>

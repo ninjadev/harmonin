@@ -54,6 +54,7 @@ html, body {
 
 .base-panel {
   padding-left: 35px;
+  padding-right: 35px;
   position: relative;
 }
 
@@ -96,6 +97,7 @@ html, body {
 .ReactTabs__TabPanel {
   background: #253237;
   border-radius: 2px;
+  padding: 15px 0;
 }
 
 .master-visualizer {
@@ -103,4 +105,61 @@ html, body {
   top: 15px;
   right: 15px;
   bottom: 15px;
+}
+
+.envelope-visualizer {
+  overflow: hidden;
+  background: #3b4449;
+  border: 1px solid #1d262b;
+  border-radius: 2px;
+}
+
+.envelope-visualizer canvas {
+  width: 100%;
+  display: block;
+}
+
+.oscillator-name {
+  text-transform: uppercase;
+  font-size: 20px;
+  color: #5c6b73;
+  float: left;
+  line-height: 80px;
+  vertical-align: middle;
+}
+
+.oscillator-settings-container {
+  text-align: right;
+}
+
+.waveform-selector-button {
+  margin-bottom: 23px;
+  width: 40px;
+  height: 30px;
+  cursor: pointer;
+  background: #5c6b73;
+  display: inline-block;
+  border: 1px solid #253237;
+  border-left: 0;
+}
+
+.waveform-selector-button.sine {
+  margin-left: 15px;
+  border-radius: 2px 0 0 2px;
+  border-left: 1px solid #253237;
+}
+
+.waveform-selector-button.triangle {
+  margin-right: 15px;
+  border-radius: 0 2px 2px 0;
+}
+
+.waveform-selector-button.selected {
+  background: #253237;
+  color: #5c6b73;
+  border-color: #5c6b73;
+}
+
+.load-preset-button {
+  float: right;
 }
