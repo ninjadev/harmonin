@@ -102,6 +102,7 @@ class Knob extends React.Component {
 
   onDoubleClick(e) {
     this.input.focus();
+    this.input.select();
   }
 
   onTouchStart(e) {
@@ -110,7 +111,7 @@ class Knob extends React.Component {
     this.currentTouchId = e.touches[e.touches.length - 1].identifier;
   }
 
-  setDenormalizedValue(denormalizedValue, shouldUpdateAudioParam, shouldInputValue) {
+  setDenormalizedValue(denormalizedValue, shouldUpdateAudioParam) {
     this.setState({
       value: this.normalizeValue(denormalizedValue)
     });
@@ -158,7 +159,8 @@ class Knob extends React.Component {
           <input
             ref={input => this.input = input}
             value={this.state.inputValue}
-            onChange={e => { this.setState({inputValue: e.target.value}); this.setDenormalizedValue(+e.target.value, true, false)}}
+            onChange={e => { this.setState({inputValue: e.target.value}); this.setDenormalizedValue(+e.target.value, true)}}
+            onBlur={e => { if(e.target.value == '') { this.setState({inputValue: this.props.min}); this.setDenormalizedValue(+this.props.min, true)}}}
             />
           <svg viewBox="0 0 50 50">
             <circle
