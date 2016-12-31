@@ -36,6 +36,10 @@ class BaseChannel {
     return 440 * Math.pow(2, (note - 69) / 12);
   }
 
+  frequencyToNoteNumber(frequency) {
+    return Math.log(frequency / 440) / Math.log(2) * 12 + 69;
+  }
+
   noteOn(note, velocity) {
   }
 
