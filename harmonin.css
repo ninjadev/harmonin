@@ -179,7 +179,8 @@ html, body {
   cursor: pointer;
 }
 
-canvas.piano {
+canvas.piano,
+canvas.top-piano {
   margin: 0 auto;
   display: block;
 }
