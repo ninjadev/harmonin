@@ -44,9 +44,6 @@ class BaseChannel {
 
   mod(id, value) {
   }
-
-  updateUI() {
-  }
 }
 
 module.exports = BaseChannel;

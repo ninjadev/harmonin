@@ -7,6 +7,15 @@ class WaveformVisualizer extends React.Component {
   constructor() {
     super();
     this.loop = () => this.updateVisualizer();
+    this.connected = false;
+  }
+
+  onDisconnect() {
+    this.connected = false;
+  }
+
+  onConnect() {
+    this.connected = true;
   }
 
   updateVisualizer() {
@@ -18,6 +27,9 @@ class WaveformVisualizer extends React.Component {
     this.ctx.drawImage(this.canvas, 0, 1);
     this.ctx.fillStyle = '#3b4449';
     this.ctx.fillRect(0, 0, this.canvas.width, 1);
+    if(!this.connected) {
+      return;
+    }
     if(max > 1) {
       this.ctx.fillStyle = '#ff9130';
     } else if(max > 0.7) {
@@ -35,6 +47,7 @@ class WaveformVisualizer extends React.Component {
   componentDidMount() {
     this.analyserNode = this.props.audioNode.context.createAnalyser(256);
     this.props.audioNode.connect(this.analyserNode);
+    this.connected = true;
     this.visualiserArray = new Float32Array(this.analyserNode.fftSize);
     this.ctx = this.canvas.getContext('2d');
     RequestAnimationFrame.on(this.loop);

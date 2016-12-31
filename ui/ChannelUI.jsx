@@ -29,7 +29,8 @@ class ChannelUI extends React.Component {
     this.state = {
       titleA: '',
       titleB: '',
-      showPresetList: false
+      showPresetList: false,
+      isMuted: true
     };
 
     if(!ChannelUI.IMAGE_CACHE) {
@@ -130,6 +131,7 @@ class ChannelUI extends React.Component {
 
   componentDidMount() {
     this.updateTitle();
+    this.unmute();
   }
 
   onFilterTypeChange(type) {
@@ -151,6 +153,34 @@ class ChannelUI extends React.Component {
     if(this.filterFrequencyKnob) {
       this.filterFrequencyKnob.update();
     }
+  }
+
+  mute() {
+    this.setState({isMuted: true});
+    this.props.channel.outputNode.disconnect(this.masterOutputNode);
+    this.props.channel.reverbSendNode.disconnect(this.reverbNode);
+    this.waveformVisualizer.onDisconnect();
+  }
+
+  unmute() {
+    this.setState({isMuted: false});
+    this.props.channel.outputNode.connect(this.props.harmonin.masterOutputNode);
+    this.props.channel.outputNode.connect(this.waveformVisualizer.analyserNode);
+    this.props.channel.reverbSendNode.connect(this.props.harmonin.reverbNode);
+    this.waveformVisualizer.onConnect();
+  }
+
+  toggleMute() {
+    if(this.state.isMuted) {
+      this.unmute();
+    } else {
+      this.mute();
+    }
+  }
+
+  soloPressed(e) {
+    e.preventDefault();
+    this.props.harmonin.solo(this.props.channel.id);
   }
 
   render() {
@@ -191,6 +221,7 @@ class ChannelUI extends React.Component {
               width="20"
               height="50"
               audioNode={this.props.channel.outputNode}
+              ref={ref => this.waveformVisualizer = ref}
               />
           </div>
 
@@ -220,6 +251,11 @@ class ChannelUI extends React.Component {
           );
         })}
           </div>
+          <div
+            className={'mute-button ' + (this.state.isMuted ? 'muted' : '')}
+            onClick={e => this.toggleMute()}
+            onContextMenu={e => this.soloPressed(e)}
+            />
           <Knob
             name="Volume"
             audioParam={this.props.channel.outputNode.gain}

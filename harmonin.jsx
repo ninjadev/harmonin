@@ -70,25 +70,21 @@ class Harmonin extends React.Component {
     this.masterOutputNode = audioContext.createGain();
     this.masterOutputNode.connect(audioContext.destination);
 
-    var reverbNode = audioContext.createConvolver();
-    reverbNode.connect(this.masterOutputNode);
+    this.reverbNode = audioContext.createConvolver();
+    this.reverbNode.connect(this.masterOutputNode);
+    const that = this;
     (function() {
       var request = new XMLHttpRequest();
       request.open('GET', 'data/irHall.ogg', true);
       request.responseType = 'arraybuffer';
       request.onload = function() {
         audioContext.decodeAudioData(request.response, function(buffer) {
-          reverbNode.buffer = buffer;
+          that.reverbNode.buffer = buffer;
         },
         function(e){console.log(e)});
       }
       request.send();
     })();
-
-    for(var channel of this.channels) {
-      channel.outputNode.connect(this.masterOutputNode);
-      channel.reverbSendNode.connect(reverbNode);
-    }
 
     var eventTimingLoopNode = audioContext.createScriptProcessor(256, 1, 1);
     eventTimingLoopNode.connect(audioContext.destination);
@@ -108,7 +104,6 @@ class Harmonin extends React.Component {
 
     var midiFile;
 
-    var that = this;
     function tick(time, stepSize) {
       if(midiFile) {
         midiFile.play_forward(stepSize * 1000);
@@ -169,12 +164,35 @@ class Harmonin extends React.Component {
     this.resize();
   }
 
+  solo(id) {
+    let didChange = false;
+    for(let channelId in this.channelUIs) {
+      if(id == channelId) {
+        if(this.channelUIs[channelId].state.isMuted) {
+          didChange = true;
+        }
+        this.channelUIs[channelId].unmute();
+      } else {
+        if(!this.channelUIs[channelId].state.isMuted) {
+          didChange = true;
+        }
+        this.channelUIs[channelId].mute();
+      }
+    }
+    if(!didChange) {
+      for(let channelId in this.channelUIs) {
+        this.channelUIs[channelId].unmute();
+      }
+    }
+  }
+
   render() {
     return (
       <div>
        {this.channels.map(channel =>
           <ChannelUI
             channel={channel}
+            harmonin={this}            
             key={channel.id}
             ref={channelUI => this.channelUIs[channel.id] = channelUI}
             />)};

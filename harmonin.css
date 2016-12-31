@@ -207,3 +207,21 @@ canvas.top-piano {
   background: #253237;
   color: #9db4c0;
 }
+
+.mute-button {
+  width: 8px;
+  height: 8px;
+  position: absolute;
+  top: 75px;
+  left: 6px;
+  background: #a9e156; 
+  border: 1px solid #0e2911;
+  border-radius: 5px;
+  box-shadow: 0px 0px 2px #a9e156; 
+  cursor: pointer;
+}
+
+.mute-button.muted {
+  background: #5f6669;
+  box-shadow: 0px 0px 2px #5f6669;
+}
