@@ -1,17 +1,15 @@
 const React = require('react');
+const RequestAnimationFrame = require('./RequestAnimationFrame');
 
 
 class WaveformVisualizer extends React.Component {
 
   constructor() {
     super();
-    this.loop = true;
+    this.loop = () => this.updateVisualizer();
   }
 
   updateVisualizer() {
-    if(this.loop) {
-      requestAnimationFrame(() => this.updateVisualizer());
-    }
     this.analyserNode.getFloatTimeDomainData(this.visualiserArray);
     let max = 0;
     for(let i = 0; i < this.visualiserArray.length; i++) {
@@ -39,11 +37,11 @@ class WaveformVisualizer extends React.Component {
     this.props.audioNode.connect(this.analyserNode);
     this.visualiserArray = new Float32Array(this.analyserNode.fftSize);
     this.ctx = this.canvas.getContext('2d');
-    this.updateVisualizer();
+    RequestAnimationFrame.on(this.loop);
   }
 
   componentWillUnmount() {
-    this.loop = false;
+    RequestAnimationFrame.off(this.loop);
   }
 
   render() {

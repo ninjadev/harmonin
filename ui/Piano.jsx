@@ -1,16 +1,25 @@
 const React = require('react');
+const RequestAnimationFrame = require('./RequestAnimationFrame');
 
 
 class Piano extends React.Component {
 
+  constructor() {
+    super();
+    this.loop = () => this.renderLoop();
+  }
+
   componentDidMount() {
     this.ctx = this.canvas.getContext('2d');
     this.topCtx = this.topCanvas.getContext('2d');
-    this.renderLoop();
+    RequestAnimationFrame.on(this.loop);
+  }
+
+  componentWillUnmount() {
+    RequestAnimationFrame.off(this.loop);
   }
 
   renderLoop() {
-    requestAnimationFrame(() => this.renderLoop());
     const width = 12;
     const innerWidth = width + 1;
     const noteOffset = 36 + 3;
