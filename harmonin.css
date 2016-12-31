@@ -184,3 +184,26 @@ canvas.top-piano {
   margin: 0 auto;
   display: block;
 }
+
+.preset-list {
+  position: absolute;
+  display: inline-block;
+  z-index: 9;
+  color: #253237;
+  background: #9db4c0;
+  width: auto;
+  top: 30px;
+  right: 5px;
+  border: 1px solid #253237;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.preset-list div {
+  padding: 5px;
+}
+
+.preset-list div:hover {
+  background: #253237;
+  color: #9db4c0;
+}

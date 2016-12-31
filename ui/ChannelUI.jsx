@@ -28,7 +28,8 @@ class ChannelUI extends React.Component {
     super();
     this.state = {
       titleA: '',
-      titleB: ''
+      titleB: '',
+      showPresetList: false
     };
 
     if(!ChannelUI.IMAGE_CACHE) {
@@ -100,7 +101,12 @@ class ChannelUI extends React.Component {
   }
 
   loadPresetClicked(event) {
-    this.loadPreset(presets[Math.random() * presets.length | 0]);
+    this.setState({showPresetList: !this.state.showPresetList});
+  }
+
+  presetClicked(event) {
+    this.loadPreset(presets[+event.target.dataset.preset]);
+    this.setState({showPresetList: false});
   }
 
   componentDidMount() {
@@ -137,6 +143,18 @@ class ChannelUI extends React.Component {
           >
           Load preset
         </div>
+        {this.state.showPresetList ?
+          <div className="preset-list">
+            {presets.map((preset, index) =>
+              <div 
+                data-preset={index}
+                key={index}
+                onClick={e => this.presetClicked(e)}
+                >
+                {preset.name}
+             </div>)}
+           </div>
+        : ''}
         <div className="name">
           {this.state.titleA}
           <span className="patch-name">{this.state.titleB}</span>
