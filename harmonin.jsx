@@ -4,6 +4,7 @@ const ChannelUI = require('./ui/ChannelUI');
 const React = require('react');
 const ReactDOM = require('react-dom');
 const WaveformVisualizer = require('./ui/WaveformVisualizer');
+const MidiKeyboard = require('./ui/MidiKeyboard');
 
 import {Tabs} from 'react-tabs';
 Tabs.setUseDefaultStyles(false);
@@ -33,6 +34,9 @@ class Harmonin extends React.Component {
     this.state = {
       masterVisualizerHeight: 0
     };
+
+    this.midiKeyboard = new MidiKeyboard((channel, type, note, velocity) => this.onMidiEvent(channel, type, note, velocity));
+    this.midiKeyboard.attach();
 
     this.channelUIs = {};
 
