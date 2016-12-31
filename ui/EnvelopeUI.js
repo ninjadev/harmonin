@@ -11,7 +11,7 @@ class EnvelopeUI extends React.Component {
   }
 
   updateCanvas() {
-    if(!this.ctx) {
+    if(!this.ctx || !this.canvas) {
       return;
     }
     this.canvas.width = this.canvas.width;
