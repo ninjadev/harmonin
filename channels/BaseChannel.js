@@ -21,13 +21,12 @@ class BaseChannel {
 
   loadPreset(settings) {
     this.settings = settings;
-    this.outputNode.gain.value = 0.1 * settings.volume;
+    this.outputNode.gain.value = settings.volume;
     this.reverbSendNode.gain.value = settings.reverb || 0;
     this.filter.type = settings.filterType;
     this.filter.frequency.value = settings.filterFrequency || 0;
-    this.accumulator = this.filter;
-    this.delay.delayTime.value = settings.delay ? settings.delay.time : 0;
-    this.delayGain.gain.value = settings.delay ? settings.delay.feedback : 0;
+    this.delay.delayTime.value = settings.delayTime || 0;
+    this.delayGain.gain.value = settings.delayGain || 0;
   }
 
   tick(time) {

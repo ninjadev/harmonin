@@ -136,6 +136,50 @@ class OscillatorUI extends React.Component {
 
 class OsirisUI extends React.Component {
 
+  savePreset() {
+    return {
+      vibratoFrequency: this.props.channel.vibratoFrequency.value,
+      vibratoAmount: this.props.channel.vibratoAmount.value,
+      portamentoTime: this.props.channel.portamentoTime.value,
+      envelope: {
+        delay: this.props.channel.envelope.delay.value,
+        attack: this.props.channel.envelope.attack.value,
+        hold: this.props.channel.envelope.hold.value,
+        decay: this.props.channel.envelope.decay.value,
+        sustain: this.props.channel.envelope.sustain.value,
+        release: this.props.channel.envelope.release.value,
+        amount: this.props.channel.envelope.amount.value,
+        offset: this.props.channel.envelope.offset.value
+      },
+      filterEnvelope: {
+        delay: this.props.channel.filterEnvelope.delay.value,
+        attack: this.props.channel.filterEnvelope.attack.value,
+        hold: this.props.channel.filterEnvelope.hold.value,
+        decay: this.props.channel.filterEnvelope.decay.value,
+        sustain: this.props.channel.filterEnvelope.sustain.value,
+        release: this.props.channel.filterEnvelope.release.value,
+        amount: this.props.channel.filterEnvelope.amount.value,
+        offset: this.props.channel.filterEnvelope.offset.value
+      },
+      oscillator1: {
+        type: this.props.channel.oscillatorSettings[0].type.value,
+        pitch: this.props.channel.oscillatorSettings[0].pitch.value,
+        volume: this.props.channel.oscillatorSettings[0].volume.value
+      },
+      oscillator2: {
+        type: this.props.channel.oscillatorSettings[1].type.value,
+        pitch: this.props.channel.oscillatorSettings[1].pitch.value,
+        volume: this.props.channel.oscillatorSettings[1].volume.value
+      },
+      oscillator3: {
+        type: this.props.channel.oscillatorSettings[2].type.value,
+        pitch: this.props.channel.oscillatorSettings[2].pitch.value,
+        volume: this.props.channel.oscillatorSettings[2].volume.value
+      }
+    };
+  }
+
+
   render() {
     return (
       <div className="base-panel"> 

@@ -43,26 +43,26 @@ class Harmonin extends React.Component {
     var audioContext = new AudioContext();
 
     this.channels = [
-      new Osiris(audioContext, require('./presets/osiris/MotionBass')),
-      new Osiris(audioContext, require('./presets/osiris/MotionChords')),
-      new Osiris(audioContext, require('./presets/osiris/MotionLead')),
-      new Osiris(audioContext, require('./presets/osiris/MotionBell')),
+      new Osiris(audioContext, require('./presets/osiris/UltraNiceAnalogueStyleSaw')),
+      new Osiris(audioContext, require('./presets/osiris/Mellosynth')),
+      new Osiris(audioContext, require('./presets/osiris/WidePad')),
+      new Osiris(audioContext, require('./presets/osiris/SquarePluck')),
       new Sampler(audioContext, {
-        volume: 5,
+        volume: 0.5,
         filename: 'data/kick.wav'
       }),
       new Sampler(audioContext, {
-        volume: 10,
+        volume: 0.5,
         filename: 'data/snare.wav'
       }),
       new Sampler(audioContext, {
         reverb: 0.25,
-        volume: 1,
+        volume: 0.5,
         filename: 'data/hihat.wav'
       }),
       new Sampler(audioContext, {
         reverb: .5,
-        volume: 20,
+        volume: 0.5,
         filename: 'data/crash.wav'
       })
     ]

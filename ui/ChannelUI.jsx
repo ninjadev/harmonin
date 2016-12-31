@@ -94,6 +94,25 @@ class ChannelUI extends React.Component {
     }
   }
 
+  savePresetClicked(e) {
+    this.savePreset();
+  }
+
+  savePreset() {
+    const preset = {
+      reverb: this.props.channel.reverbSendNode.gain.value,
+      name: this.state.titleB,
+      synth: this.props.channel.constructor.name,
+      volume: this.props.channel.outputNode.gain.value,
+      filterType: this.props.channel.filter.type,
+      filterFrequency: this.props.channel.filter.frequency.value,
+      delayTime: this.props.channel.delay.delayTime.value,
+      delayGain: this.props.channel.delayGain.gain.value,
+      details: this.channelUI.savePreset()
+    };
+    console.log(JSON.stringify(preset));
+  }
+
   loadPreset(preset) {
     this.props.channel.loadPreset(preset);
     this.updateTitle();
@@ -142,6 +161,13 @@ class ChannelUI extends React.Component {
           onClick={e => this.loadPresetClicked(e)}
           >
           Load preset
+        </div>
+
+        <div
+          className="load-preset-button"
+          onClick={e => this.savePresetClicked(e)}
+          >
+          Save preset
         </div>
         {this.state.showPresetList ?
           <div className="preset-list">
@@ -226,11 +252,17 @@ class ChannelUI extends React.Component {
 
 
           {this.props.channel.constructor.name == 'Osiris' ? 
-            <OsirisUI channel={this.props.channel} />
+            <OsirisUI
+              channel={this.props.channel}
+              ref={ui => this.channelUI = ui}
+              />
           :''}
 
           {this.props.channel.constructor.name == 'Sampler' ?
-            <SamplerUI channel={this.props.channel} />
+            <SamplerUI
+              channel={this.props.channel}
+              ref={ui => this.channelUI = ui}
+              />
           :''}
         </div>
     );

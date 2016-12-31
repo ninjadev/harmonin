@@ -135,7 +135,7 @@ class Knob extends React.Component {
       });
     } else {
       this.setState({
-        inputValue: (this.denormalizeValue(value) * 100 | 0) / 100
+        inputValue: (this.denormalizeValue(value) * 1000 | 0) / 1000
       });
     }
     if(shouldUpdateAudioParam) {
