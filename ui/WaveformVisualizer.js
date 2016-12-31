@@ -1,17 +1,24 @@
 const React = require('react');
+const RequestAnimationFrame = require('./RequestAnimationFrame');
 
 
 class WaveformVisualizer extends React.Component {
 
   constructor() {
     super();
-    this.loop = true;
+    this.loop = () => this.updateVisualizer();
+    this.connected = false;
+  }
+
+  onDisconnect() {
+    this.connected = false;
+  }
+
+  onConnect() {
+    this.connected = true;
   }
 
   updateVisualizer() {
-    if(this.loop) {
-      requestAnimationFrame(() => this.updateVisualizer());
-    }
     this.analyserNode.getFloatTimeDomainData(this.visualiserArray);
     let max = 0;
     for(let i = 0; i < this.visualiserArray.length; i++) {
@@ -20,6 +27,9 @@ class WaveformVisualizer extends React.Component {
     this.ctx.drawImage(this.canvas, 0, 1);
     this.ctx.fillStyle = '#3b4449';
     this.ctx.fillRect(0, 0, this.canvas.width, 1);
+    if(!this.connected) {
+      return;
+    }
     if(max > 1) {
       this.ctx.fillStyle = '#ff9130';
     } else if(max > 0.7) {
@@ -37,13 +47,14 @@ class WaveformVisualizer extends React.Component {
   componentDidMount() {
     this.analyserNode = this.props.audioNode.context.createAnalyser(256);
     this.props.audioNode.connect(this.analyserNode);
+    this.connected = true;
     this.visualiserArray = new Float32Array(this.analyserNode.fftSize);
     this.ctx = this.canvas.getContext('2d');
-    this.updateVisualizer();
+    RequestAnimationFrame.on(this.loop);
   }
 
   componentWillUnmount() {
-    this.loop = false;
+    RequestAnimationFrame.off(this.loop);
   }
 
   render() {

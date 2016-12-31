@@ -179,7 +179,73 @@ html, body {
   cursor: pointer;
 }
 
-canvas.piano {
+canvas.piano,
+canvas.top-piano {
   margin: 0 auto;
   display: block;
+}
+
+.preset-list {
+  position: absolute;
+  display: inline-block;
+  z-index: 9;
+  color: #253237;
+  background: #9db4c0;
+  width: auto;
+  top: 30px;
+  right: 5px;
+  border: 1px solid #253237;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.preset-list div {
+  padding: 5px;
+}
+
+.preset-list div:hover {
+  background: #253237;
+  color: #9db4c0;
+}
+
+.mute-button {
+  width: 8px;
+  height: 8px;
+  position: absolute;
+  top: 75px;
+  left: 6px;
+  background: #a9e156; 
+  border: 1px solid #0e2911;
+  border-radius: 5px;
+  box-shadow: 0px 0px 2px #a9e156; 
+  cursor: pointer;
+}
+
+.mute-button.muted {
+  background: #5f6669;
+  box-shadow: 0px 0px 2px #5f6669;
+}
+
+.details-container {
+}
+
+.details-container.collapsed {
+  display: none;
+}
+
+.collapse-button {
+  width: 20px;
+  height: 10px;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background: #5c6b73;
+  border: 1px solid #253237;
+  border-radius: 2px;
+  cursor: pointer;
+  z-index: 99;
+}
+
+.collapse-button.collapsed {
+  background: #253237; 
 }

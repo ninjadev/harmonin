@@ -40,36 +40,22 @@ class Osiris extends BaseChannel {
       });
     }
     this.activeNotesCount = 0;
-    this.envelope = new Envelope(settings.envelope);
-    this.filterEnvelope = new Envelope(settings.filterEnvelope);
-    this.oscillatorSettings = [
-      new OscillatorSettings(settings.oscillator1),
-      new OscillatorSettings(settings.oscillator2),
-      new OscillatorSettings(settings.oscillator3)
-    ];
-    this.vibratoFrequency = new Parameter(settings.vibratoFrequency);
-    this.vibratoAmount = new Parameter(settings.vibratoAmount);
-
-    this.portamentoTime = new Parameter(settings.portamentoTime);
-    this.currentPortamentoNote = 45;
-
-    this.pitchBend = new Parameter(0);
-    this.pitchBendAmount = 2;
+    this.loadPreset(settings);
   }
 
   loadPreset(settings) {
     super.loadPreset(settings);
-    this.envelope = new Envelope(settings.envelope);
-    this.filterEnvelope = new Envelope(settings.filterEnvelope);
+    this.envelope = new Envelope(settings.details.envelope);
+    this.filterEnvelope = new Envelope(settings.details.filterEnvelope);
     this.oscillatorSettings = [
-      new OscillatorSettings(settings.oscillator1),
-      new OscillatorSettings(settings.oscillator2),
-      new OscillatorSettings(settings.oscillator3)
+      new OscillatorSettings(settings.details.oscillator1),
+      new OscillatorSettings(settings.details.oscillator2),
+      new OscillatorSettings(settings.details.oscillator3)
     ];
-    this.vibratoFrequency = new Parameter(settings.vibratoFrequency);
-    this.vibratoAmount = new Parameter(settings.vibratoAmount);
+    this.vibratoFrequency = new Parameter(settings.details.vibratoFrequency);
+    this.vibratoAmount = new Parameter(settings.details.vibratoAmount);
 
-    this.portamentoTime = new Parameter(settings.portamentoTime);
+    this.portamentoTime = new Parameter(settings.details.portamentoTime);
     this.currentPortamentoNote = 45;
 
     this.pitchBend = new Parameter(0);
@@ -97,10 +83,8 @@ class Osiris extends BaseChannel {
         }
       }
 
-      if(this.filterEnvelope) {
-        var frequency = 21000 * Math.pow(this.filterEnvelope.getValue(noteTime, releaseTime), 2);
-        note.filter.frequency.value = frequency;
-      }
+      var frequency = 21000 * Math.pow(this.filterEnvelope.getValue(noteTime, releaseTime), 2);
+      note.filter.frequency.value = frequency;
 
       if(releaseTime >= this.envelope.release.value / 1000) {
         this.notes[i--] = this.notes[--this.activeNotesCount];
@@ -120,13 +104,9 @@ class Osiris extends BaseChannel {
     var gain = this.audioContext.createGain();
     gain.gain.value = 0;
     gain.connect(this.accumulator);
-    if(this.filterEnvelope)  {
-      var filter = this.audioContext.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.value = 20000;
-    } else {
-      var filter = this.audioContext.createGain();
-    }
+    var filter = this.audioContext.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 20000;
     filter.connect(gain);
 
     for(var settings of this.oscillatorSettings) {

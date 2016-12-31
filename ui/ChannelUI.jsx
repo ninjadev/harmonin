@@ -28,7 +28,9 @@ class ChannelUI extends React.Component {
     super();
     this.state = {
       titleA: '',
-      titleB: ''
+      titleB: '',
+      showPresetList: false,
+      isMuted: true
     };
 
     if(!ChannelUI.IMAGE_CACHE) {
@@ -93,6 +95,25 @@ class ChannelUI extends React.Component {
     }
   }
 
+  savePresetClicked(e) {
+    this.savePreset();
+  }
+
+  savePreset() {
+    const preset = {
+      reverb: this.props.channel.reverbSendNode.gain.value,
+      name: this.state.titleB,
+      synth: this.props.channel.constructor.name,
+      volume: this.props.channel.outputNode.gain.value,
+      filterType: this.props.channel.filter.type,
+      filterFrequency: this.props.channel.filter.frequency.value,
+      delayTime: this.props.channel.delay.delayTime.value,
+      delayGain: this.props.channel.delayGain.gain.value,
+      details: this.channelUI.savePreset()
+    };
+    console.log(JSON.stringify(preset));
+  }
+
   loadPreset(preset) {
     this.props.channel.loadPreset(preset);
     this.updateTitle();
@@ -100,11 +121,17 @@ class ChannelUI extends React.Component {
   }
 
   loadPresetClicked(event) {
-    this.loadPreset(presets[Math.random() * presets.length | 0]);
+    this.setState({showPresetList: !this.state.showPresetList});
+  }
+
+  presetClicked(event) {
+    this.loadPreset(presets[+event.target.dataset.preset]);
+    this.setState({showPresetList: false});
   }
 
   componentDidMount() {
     this.updateTitle();
+    this.unmute();
   }
 
   onFilterTypeChange(type) {
@@ -128,6 +155,43 @@ class ChannelUI extends React.Component {
     }
   }
 
+  mute() {
+    this.setState({isMuted: true});
+    this.props.channel.outputNode.disconnect(this.masterOutputNode);
+    this.props.channel.reverbSendNode.disconnect(this.reverbNode);
+    this.waveformVisualizer.onDisconnect();
+  }
+
+  unmute() {
+    this.setState({isMuted: false});
+    this.props.channel.outputNode.connect(this.props.harmonin.masterOutputNode);
+    this.props.channel.outputNode.connect(this.waveformVisualizer.analyserNode);
+    this.props.channel.reverbSendNode.connect(this.props.harmonin.reverbNode);
+    this.waveformVisualizer.onConnect();
+  }
+
+  toggleMute() {
+    if(this.state.isMuted) {
+      this.unmute();
+    } else {
+      this.mute();
+    }
+  }
+
+  toggleCollapse() {
+    this.setState({isCollapsed: !this.state.isCollapsed});
+  }
+
+  soloPressed(e) {
+    e.preventDefault();
+    this.props.harmonin.solo(this.props.channel.id);
+  }
+
+  soloCollapsePressed(e) {
+    e.preventDefault();
+    this.props.harmonin.soloCollapse(this.props.channel.id);
+  }
+
   render() {
     return (
       <div className="channel-container">
@@ -137,16 +201,43 @@ class ChannelUI extends React.Component {
           >
           Load preset
         </div>
+
+        <div
+          className="load-preset-button"
+          onClick={e => this.savePresetClicked(e)}
+          >
+          Save preset
+        </div>
+        {this.state.showPresetList ?
+          <div className="preset-list">
+            {presets.map((preset, index) =>
+              <div 
+                data-preset={index}
+                key={index}
+                onClick={e => this.presetClicked(e)}
+                >
+                {preset.name}
+             </div>)}
+           </div>
+        : ''}
         <div className="name">
           {this.state.titleA}
           <span className="patch-name">{this.state.titleB}</span>
         </div>
+
+        <div
+          className={'collapse-button ' + (this.state.isCollapsed ? 'collapsed' : '')}
+          onClick={e => this.toggleCollapse()}
+          onContextMenu={e => this.soloCollapsePressed(e)}
+          />
+
         <div className="base-panel">
           <div className="visualizer">
             <WaveformVisualizer
               width="20"
               height="50"
               audioNode={this.props.channel.outputNode}
+              ref={ref => this.waveformVisualizer = ref}
               />
           </div>
 
@@ -176,6 +267,11 @@ class ChannelUI extends React.Component {
           );
         })}
           </div>
+          <div
+            className={'mute-button ' + (this.state.isMuted ? 'muted' : '')}
+            onClick={e => this.toggleMute()}
+            onContextMenu={e => this.soloPressed(e)}
+            />
           <Knob
             name="Volume"
             audioParam={this.props.channel.outputNode.gain}
@@ -207,13 +303,23 @@ class ChannelUI extends React.Component {
           </div>
 
 
-          {this.props.channel.constructor.name == 'Osiris' ? 
-            <OsirisUI channel={this.props.channel} />
-          :''}
+          <div
+            className={'details-container ' + (this.state.isCollapsed ? 'collapsed' : '')}
+            >
+            {this.props.channel.constructor.name == 'Osiris' ? 
+              <OsirisUI
+                channel={this.props.channel}
+                ref={ui => this.channelUI = ui}
+                />
+            :''}
 
-          {this.props.channel.constructor.name == 'Sampler' ?
-            <SamplerUI channel={this.props.channel} />
-          :''}
+            {this.props.channel.constructor.name == 'Sampler' ?
+              <SamplerUI
+                channel={this.props.channel}
+                ref={ui => this.channelUI = ui}
+                />
+            :''}
+          </div>
         </div>
     );
   }

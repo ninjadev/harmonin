@@ -4,28 +4,12 @@ const ChannelUI = require('./ui/ChannelUI');
 const React = require('react');
 const ReactDOM = require('react-dom');
 const WaveformVisualizer = require('./ui/WaveformVisualizer');
+const MidiKeyboard = require('./ui/MidiKeyboard');
 
 import {Tabs} from 'react-tabs';
 Tabs.setUseDefaultStyles(false);
 
 
-/*
-var oReq = new XMLHttpRequest();
-oReq.open("GET", "/harmonin2.mid");
-oReq.responseType = "arraybuffer";
-oReq.onload = function (oEvent) {
-  var arrayBuffer = oReq.response;
-  if (arrayBuffer) {
-    var byteArray = new Uint8Array(arrayBuffer);
-    midiFile = new Midi(byteArray);
-    midiFile.add_callback(e => {
-      onMidiEvent(e.midi_channel, e.type, e.note_number, e.velocity);
-    });
-  }
-};
-
-oReq.send(null);
-*/
 class Harmonin extends React.Component {
 
   constructor() {
@@ -34,31 +18,34 @@ class Harmonin extends React.Component {
       masterVisualizerHeight: 0
     };
 
+    this.midiKeyboard = new MidiKeyboard((channel, type, note, velocity) => this.onMidiEvent(channel, type, note, velocity));
+    this.midiKeyboard.attach();
+
     this.channelUIs = {};
 
     var audioContext = new AudioContext();
 
     this.channels = [
-      new Osiris(audioContext, require('./presets/osiris/MotionBass')),
-      new Osiris(audioContext, require('./presets/osiris/MotionChords')),
-      new Osiris(audioContext, require('./presets/osiris/MotionLead')),
-      new Osiris(audioContext, require('./presets/osiris/MotionBell')),
+      new Osiris(audioContext, require('./presets/osiris/UltraNiceAnalogueStyleSaw')),
+      new Osiris(audioContext, require('./presets/osiris/Mellosynth')),
+      new Osiris(audioContext, require('./presets/osiris/WidePad')),
+      new Osiris(audioContext, require('./presets/osiris/SquarePluck')),
       new Sampler(audioContext, {
-        volume: 5,
+        volume: 0.5,
         filename: 'data/kick.wav'
       }),
       new Sampler(audioContext, {
-        volume: 10,
+        volume: 0.5,
         filename: 'data/snare.wav'
       }),
       new Sampler(audioContext, {
         reverb: 0.25,
-        volume: 1,
+        volume: 0.5,
         filename: 'data/hihat.wav'
       }),
       new Sampler(audioContext, {
         reverb: .5,
-        volume: 20,
+        volume: 0.5,
         filename: 'data/crash.wav'
       })
     ]
@@ -66,25 +53,21 @@ class Harmonin extends React.Component {
     this.masterOutputNode = audioContext.createGain();
     this.masterOutputNode.connect(audioContext.destination);
 
-    var reverbNode = audioContext.createConvolver();
-    reverbNode.connect(this.masterOutputNode);
+    this.reverbNode = audioContext.createConvolver();
+    this.reverbNode.connect(this.masterOutputNode);
+    const that = this;
     (function() {
       var request = new XMLHttpRequest();
       request.open('GET', 'data/irHall.ogg', true);
       request.responseType = 'arraybuffer';
       request.onload = function() {
         audioContext.decodeAudioData(request.response, function(buffer) {
-          reverbNode.buffer = buffer;
+          that.reverbNode.buffer = buffer;
         },
         function(e){console.log(e)});
       }
       request.send();
     })();
-
-    for(var channel of this.channels) {
-      channel.outputNode.connect(this.masterOutputNode);
-      channel.reverbSendNode.connect(reverbNode);
-    }
 
     var eventTimingLoopNode = audioContext.createScriptProcessor(256, 1, 1);
     eventTimingLoopNode.connect(audioContext.destination);
@@ -103,8 +86,21 @@ class Harmonin extends React.Component {
     };
 
     var midiFile;
+    var oReq = new XMLHttpRequest();
+    oReq.open("GET", "/harmonin2.mid");
+    oReq.responseType = "arraybuffer";
+    oReq.onload = function (oEvent) {
+      var arrayBuffer = oReq.response;
+      if (arrayBuffer) {
+        var byteArray = new Uint8Array(arrayBuffer);
+        midiFile = new Midi(byteArray);
+        midiFile.add_callback(e => {
+          that.onMidiEvent(e.midi_channel, e.type, e.note_number, e.velocity);
+        });
+      }
+    };
 
-    var that = this;
+    oReq.send(null);
     function tick(time, stepSize) {
       if(midiFile) {
         midiFile.play_forward(stepSize * 1000);
@@ -146,7 +142,7 @@ class Harmonin extends React.Component {
           this.channels[channel].mod(note, velocity);
         }
         if(this.channelUIs) {
-          if(this.channels[channel].id in this.channelUIs) {
+          if(channel in this.channels && this.channels[channel].id in this.channelUIs) {
             this.channelUIs[this.channels[channel].id].mod(note, velocity);
           }
         }
@@ -165,12 +161,45 @@ class Harmonin extends React.Component {
     this.resize();
   }
 
+  solo(id) {
+    let didChange = false;
+    for(let channelId in this.channelUIs) {
+      if(id == channelId) {
+        if(this.channelUIs[channelId].state.isMuted) {
+          didChange = true;
+        }
+        this.channelUIs[channelId].unmute();
+      } else {
+        if(!this.channelUIs[channelId].state.isMuted) {
+          didChange = true;
+        }
+        this.channelUIs[channelId].mute();
+      }
+    }
+    if(!didChange) {
+      for(let channelId in this.channelUIs) {
+        this.channelUIs[channelId].unmute();
+      }
+    }
+  }
+
+  soloCollapse(id) {
+    let target = true;
+    for(let channelId in this.channelUIs) {
+      target = target && this.channelUIs[channelId].state.isCollapsed;
+    }
+    for(let channelId in this.channelUIs) {
+      this.channelUIs[channelId].setState({isCollapsed: !target});
+    }
+  }
+
   render() {
     return (
       <div>
        {this.channels.map(channel =>
           <ChannelUI
             channel={channel}
+            harmonin={this}            
             key={channel.id}
             ref={channelUI => this.channelUIs[channel.id] = channelUI}
             />)};
