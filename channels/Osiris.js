@@ -83,10 +83,8 @@ class Osiris extends BaseChannel {
         }
       }
 
-      if(this.filterEnvelope) {
-        var frequency = 21000 * Math.pow(this.filterEnvelope.getValue(noteTime, releaseTime), 2);
-        note.filter.frequency.value = frequency;
-      }
+      var frequency = 21000 * Math.pow(this.filterEnvelope.getValue(noteTime, releaseTime), 2);
+      note.filter.frequency.value = frequency;
 
       if(releaseTime >= this.envelope.release.value / 1000) {
         this.notes[i--] = this.notes[--this.activeNotesCount];
@@ -106,13 +104,9 @@ class Osiris extends BaseChannel {
     var gain = this.audioContext.createGain();
     gain.gain.value = 0;
     gain.connect(this.accumulator);
-    if(this.filterEnvelope)  {
-      var filter = this.audioContext.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.value = 20000;
-    } else {
-      var filter = this.audioContext.createGain();
-    }
+    var filter = this.audioContext.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 20000;
     filter.connect(gain);
 
     for(var settings of this.oscillatorSettings) {
