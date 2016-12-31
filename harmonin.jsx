@@ -86,6 +86,7 @@ class Harmonin extends React.Component {
     };
 
     var midiFile;
+    /*
     var oReq = new XMLHttpRequest();
     oReq.open("GET", "/harmonin2.mid");
     oReq.responseType = "arraybuffer";
@@ -101,6 +102,7 @@ class Harmonin extends React.Component {
     };
 
     oReq.send(null);
+    */
     function tick(time, stepSize) {
       if(midiFile) {
         midiFile.play_forward(stepSize * 1000);
