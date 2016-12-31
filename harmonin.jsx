@@ -31,16 +31,16 @@ class Harmonin extends React.Component {
       new Osiris(audioContext, require('./presets/osiris/WidePad')),
       new Osiris(audioContext, require('./presets/osiris/SquarePluck')),
       new Sampler(audioContext, {
-        volume: 0.5,
+        volume: 0.6,
         filename: 'data/kick.wav'
       }),
       new Sampler(audioContext, {
-        volume: 0.5,
+        volume: 0.6,
         filename: 'data/snare.wav'
       }),
       new Sampler(audioContext, {
         reverb: 0.25,
-        volume: 0.5,
+        volume: 0.1,
         filename: 'data/hihat.wav'
       }),
       new Sampler(audioContext, {
@@ -48,7 +48,7 @@ class Harmonin extends React.Component {
         volume: 0.5,
         filename: 'data/crash.wav'
       })
-    ]
+    ];
 
     this.masterOutputNode = audioContext.createGain();
     this.masterOutputNode.connect(audioContext.destination);
