@@ -225,3 +225,27 @@ canvas.top-piano {
   background: #5f6669;
   box-shadow: 0px 0px 2px #5f6669;
 }
+
+.details-container {
+}
+
+.details-container.collapsed {
+  display: none;
+}
+
+.collapse-button {
+  width: 20px;
+  height: 10px;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background: #5c6b73;
+  border: 1px solid #253237;
+  border-radius: 2px;
+  cursor: pointer;
+  z-index: 99;
+}
+
+.collapse-button.collapsed {
+  background: #253237; 
+}

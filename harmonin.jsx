@@ -145,7 +145,7 @@ class Harmonin extends React.Component {
           this.channels[channel].mod(note, velocity);
         }
         if(this.channelUIs) {
-          if(this.channels[channel].id in this.channelUIs) {
+          if(channel in this.channels && this.channels[channel].id in this.channelUIs) {
             this.channelUIs[this.channels[channel].id].mod(note, velocity);
           }
         }
@@ -183,6 +183,16 @@ class Harmonin extends React.Component {
       for(let channelId in this.channelUIs) {
         this.channelUIs[channelId].unmute();
       }
+    }
+  }
+
+  soloCollapse(id) {
+    let target = true;
+    for(let channelId in this.channelUIs) {
+      target = target && this.channelUIs[channelId].state.isCollapsed;
+    }
+    for(let channelId in this.channelUIs) {
+      this.channelUIs[channelId].setState({isCollapsed: !target});
     }
   }
 

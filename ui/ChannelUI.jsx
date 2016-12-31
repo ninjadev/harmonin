@@ -178,9 +178,18 @@ class ChannelUI extends React.Component {
     }
   }
 
+  toggleCollapse() {
+    this.setState({isCollapsed: !this.state.isCollapsed});
+  }
+
   soloPressed(e) {
     e.preventDefault();
     this.props.harmonin.solo(this.props.channel.id);
+  }
+
+  soloCollapsePressed(e) {
+    e.preventDefault();
+    this.props.harmonin.soloCollapse(this.props.channel.id);
   }
 
   render() {
@@ -215,6 +224,13 @@ class ChannelUI extends React.Component {
           {this.state.titleA}
           <span className="patch-name">{this.state.titleB}</span>
         </div>
+
+        <div
+          className={'collapse-button ' + (this.state.isCollapsed ? 'collapsed' : '')}
+          onClick={e => this.toggleCollapse()}
+          onContextMenu={e => this.soloCollapsePressed(e)}
+          />
+
         <div className="base-panel">
           <div className="visualizer">
             <WaveformVisualizer
@@ -287,19 +303,23 @@ class ChannelUI extends React.Component {
           </div>
 
 
-          {this.props.channel.constructor.name == 'Osiris' ? 
-            <OsirisUI
-              channel={this.props.channel}
-              ref={ui => this.channelUI = ui}
-              />
-          :''}
+          <div
+            className={'details-container ' + (this.state.isCollapsed ? 'collapsed' : '')}
+            >
+            {this.props.channel.constructor.name == 'Osiris' ? 
+              <OsirisUI
+                channel={this.props.channel}
+                ref={ui => this.channelUI = ui}
+                />
+            :''}
 
-          {this.props.channel.constructor.name == 'Sampler' ?
-            <SamplerUI
-              channel={this.props.channel}
-              ref={ui => this.channelUI = ui}
-              />
-          :''}
+            {this.props.channel.constructor.name == 'Sampler' ?
+              <SamplerUI
+                channel={this.props.channel}
+                ref={ui => this.channelUI = ui}
+                />
+            :''}
+          </div>
         </div>
     );
   }
