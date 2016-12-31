@@ -21,17 +21,16 @@ class Piano extends React.Component {
 
   renderLoop() {
     const width = 12;
-    const innerWidth = width + 1;
     const noteOffset = 36 + 3;
 
     this.topCtx.fillStyle = 'black';
     this.topCtx.fillRect(0, 0, this.topCanvas.width, this.topCanvas.height);
     this.topCtx.strokeStyle = '#ddd';
     let i = -1;
-    const activeNoteNumbers = {}
+    const activeNotes = {}
     for(let i = 0; i < this.props.channel.activeNotesCount; i++) {
       let note = this.props.channel.notes[i]; 
-      activeNoteNumbers[note.note] = true;
+      activeNotes[note.note] = note;
     }
     for(let x = 0; x < this.topCanvas.width; x += width) {
       let offset = 0;
@@ -65,7 +64,7 @@ class Piano extends React.Component {
           break;
       }
       this.topCtx.fillStyle = i % 12 ? '#e7ebf2' : '#c6cad1';
-      if((i + noteOffset) in activeNoteNumbers) {
+      if((i + noteOffset) in activeNotes && activeNotes[i + noteOffset].releaseTime == -1) {
         this.topCtx.fillStyle = '#ffca8e';
       }
       this.topCtx.fillRect(x + offset, 0, width + padding, this.topCanvas.height);
@@ -81,7 +80,7 @@ class Piano extends React.Component {
         case 6:
         case 8:
         case 10:
-        if((i + noteOffset) in activeNoteNumbers) {
+        if((i + noteOffset) in activeNotes && activeNotes[i + noteOffset].releaseTime == -1) {
           this.topCtx.fillStyle = '#fe8025';
         } else {
           this.topCtx.fillStyle = '#3c3d3f';
@@ -104,7 +103,7 @@ class Piano extends React.Component {
       } else {
         this.ctx.fillStyle = '#abdab4';
       }
-      this.ctx.fillRect((note.note - noteOffset) * width + width / 2 - note.gain.gain.value * innerWidth / 2, 0, note.gain.gain.value * innerWidth, 1);
+      this.ctx.fillRect((note.note - noteOffset) * width + width / 2 - note.gain.gain.value * width / 2, 0, note.gain.gain.value * width, 1);
     }
   }
 
