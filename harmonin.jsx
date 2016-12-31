@@ -10,23 +10,6 @@ import {Tabs} from 'react-tabs';
 Tabs.setUseDefaultStyles(false);
 
 
-/*
-var oReq = new XMLHttpRequest();
-oReq.open("GET", "/harmonin2.mid");
-oReq.responseType = "arraybuffer";
-oReq.onload = function (oEvent) {
-  var arrayBuffer = oReq.response;
-  if (arrayBuffer) {
-    var byteArray = new Uint8Array(arrayBuffer);
-    midiFile = new Midi(byteArray);
-    midiFile.add_callback(e => {
-      onMidiEvent(e.midi_channel, e.type, e.note_number, e.velocity);
-    });
-  }
-};
-
-oReq.send(null);
-*/
 class Harmonin extends React.Component {
 
   constructor() {
@@ -103,7 +86,21 @@ class Harmonin extends React.Component {
     };
 
     var midiFile;
+    var oReq = new XMLHttpRequest();
+    oReq.open("GET", "/harmonin2.mid");
+    oReq.responseType = "arraybuffer";
+    oReq.onload = function (oEvent) {
+      var arrayBuffer = oReq.response;
+      if (arrayBuffer) {
+        var byteArray = new Uint8Array(arrayBuffer);
+        midiFile = new Midi(byteArray);
+        midiFile.add_callback(e => {
+          that.onMidiEvent(e.midi_channel, e.type, e.note_number, e.velocity);
+        });
+      }
+    };
 
+    oReq.send(null);
     function tick(time, stepSize) {
       if(midiFile) {
         midiFile.play_forward(stepSize * 1000);
