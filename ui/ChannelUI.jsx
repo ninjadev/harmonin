@@ -7,6 +7,8 @@ const WaveformVisualizer = require('./WaveformVisualizer');
 
 const presets = [
   require('../presets/osiris/ClubStonk'),
+  require('../presets/osiris/KygoPluck1'),
+  require('../presets/osiris/KygoPluck2'),
   require('../presets/osiris/Mellosynth'),
   require('../presets/osiris/MotionBass'),
   require('../presets/osiris/MotionBell'),
@@ -14,7 +16,7 @@ const presets = [
   require('../presets/osiris/MotionLead'),
   require('../presets/osiris/SquarePluck'),
   require('../presets/osiris/UltraNiceAnalogueStyleSaw'),
-  require('../presets/osiris/WidePad')
+  require('../presets/osiris/WidePad'),
 ];
 
 function smoothstep (min, max, value) {
