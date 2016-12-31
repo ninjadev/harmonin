@@ -93,12 +93,10 @@ class Piano extends React.Component {
     this.ctx.drawImage(this.canvas, 0, 1);
     this.ctx.fillStyle = '#253237';
     this.ctx.fillRect(0, 0, this.canvas.width, 1);
-    this.ctx.fillStyle = '#abdab4';
-    this.ctx.globalAlpha = 0.1;
+    this.ctx.fillStyle = '#2e3e40';
     for(let x = 0; x < this.canvas.width; x += width) {
-      this.ctx.fillRect(x, 0, 1, 1);
+      this.ctx.fillRect(x, 0, 1, this.canvas.height);
     }
-    this.ctx.globalAlpha = 1;
     for(let i = 0; i < this.props.channel.activeNotesCount; i++) {
       let note = this.props.channel.notes[i]; 
       if(note.releaseTime != -1) {
@@ -116,13 +114,13 @@ class Piano extends React.Component {
         <canvas
           className="top-piano"
           ref={canvas => this.topCanvas = canvas}
-          width="650"
+          width="636"
           height="40"
           />
         <canvas
           className="piano"
           ref={canvas => this.canvas = canvas}
-          width="650"
+          width="637"
           height="200"
           />
       </div>
