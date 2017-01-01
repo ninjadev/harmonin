@@ -8,6 +8,10 @@
   color: #253237;
 }
 
+.knob-name {
+  margin-top: 2px;
+}
+
 .inverted .knob-name {
   color: #9db4c0;
 }

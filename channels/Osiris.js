@@ -34,10 +34,12 @@ class Osiris extends BaseChannel {
         startTime: -1,
         releaseTime: -1,
         oscillators: [],
-        gain: null,
+        gain: audioContext.createGain(),
+        filter: audioContext.createBiquadFilter(),
         note: 0,
         velocity: 0
       });
+      this.notes[i].filter.connect(this.notes[i].gain);
     }
     this.activeNotesCount = 0;
     this.loadPreset(settings);
@@ -60,6 +62,8 @@ class Osiris extends BaseChannel {
 
     this.pitchBend = new Parameter(0);
     this.pitchBendAmount = 2;
+    this.noteFilterType = new Parameter(settings.details.noteFilterType || "lowpass");
+    console.log(settings.details.noteFilterType, settings);
   }
 
   tick(time) {
@@ -100,14 +104,19 @@ class Osiris extends BaseChannel {
   
   noteOn(note, velocity) {
     var time = this.audioContext.currentTime;
-    var oscillators = [];
-    var gain = this.audioContext.createGain();
-    gain.gain.value = 0;
-    gain.connect(this.accumulator);
-    var filter = this.audioContext.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 20000;
-    filter.connect(gain);
+
+    var n = this.notes[this.activeNotesCount++];
+    n.note = note;
+    n.startTime = time;
+    n.releaseTime = -1;
+    n.oscillators = [];
+    n.velocity = velocity;
+    n.portamentoStart = this.currentPortamentoNote;
+    n.portamentoTarget = note;
+    n.gain.gain.value = 0;
+
+    n.filter.type = this.noteFilterType.value;
+    n.filter.frequency.value = 20000;
 
     for(var settings of this.oscillatorSettings) {
       var oscillator = this.audioContext.createOscillator();
@@ -117,7 +126,7 @@ class Osiris extends BaseChannel {
       oscillatorGain.gain.value = settings.volume.value;
       oscillator.type = settings.type.value;
       oscillator.connect(oscillatorGain);
-      oscillatorGain.connect(filter);
+      oscillatorGain.connect(n.filter);
       oscillator.start(time);
       var vibratoOscillator = this.audioContext.createOscillator();
       var vibratoGain = this.audioContext.createGain();
@@ -126,18 +135,10 @@ class Osiris extends BaseChannel {
       vibratoOscillator.start(time);
       vibratoOscillator.connect(vibratoGain);
       vibratoGain.connect(oscillator.frequency);
-      oscillators.push(oscillator);
+      n.oscillators.push(oscillator);
     }
-    var n = this.notes[this.activeNotesCount++];
-    n.note = note;
-    n.startTime = time;
-    n.releaseTime = -1;
-    n.oscillators = oscillators;
-    n.gain = gain;
-    n.filter = filter;
-    n.velocity = velocity;
-    n.portamentoStart = this.currentPortamentoNote;
-    n.portamentoTarget = note;
+
+    n.gain.connect(this.accumulator);
   }
 
   noteOff(note, velocity) {

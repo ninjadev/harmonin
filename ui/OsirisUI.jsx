@@ -114,21 +114,23 @@ class OscillatorUI extends React.Component {
           );
         })}
 
-          <Knob
-            name="Volume"
-            audioParam={this.props.settings.volume}
-            mapping="linear"
-            min={0}
-            max={1}
-            />
-          <Knob
-            name="Pitch"
-            audioParam={this.props.settings.pitch}
-            mapping="linear"
-            min={-12}
-            max={12}
-            />
+          <div className="knob-group">
+            <Knob
+              name="Volume"
+              audioParam={this.props.settings.volume}
+              mapping="linear"
+              min={0}
+              max={1}
+              />
+            <Knob
+              name="Pitch"
+              audioParam={this.props.settings.pitch}
+              mapping="linear"
+              min={-12}
+              max={12}
+              />
           </div>
+        </div>
       </div>
     );
   }
@@ -232,27 +234,29 @@ class OsirisUI extends React.Component {
         <TabPanel>
           <div className="inverted">
             <div className="base-panel">
-              <Knob
-                name="Portamento"
-                audioParam={this.props.channel.portamentoTime}
-                mapping="linear"
-                min={0}
-                max={1000}
-                />
-              <Knob
-                name="Vibrato frq."
-                audioParam={this.props.channel.vibratoFrequency}
-                mapping="square"
-                min={0}
-                max={100}
-                />
-              <Knob
-                name="Vibrato amount"
-                audioParam={this.props.channel.vibratoAmount}
-                mapping="square"
-                min={0}
-                max={12}
-                />
+              <div className="knob-group">
+                <Knob
+                  name="Portamento"
+                  audioParam={this.props.channel.portamentoTime}
+                  mapping="linear"
+                  min={0}
+                  max={1000}
+                  />
+                <Knob
+                  name="Vibrato frq."
+                  audioParam={this.props.channel.vibratoFrequency}
+                  mapping="square"
+                  min={0}
+                  max={100}
+                  />
+                <Knob
+                  name="Vibrato amount"
+                  audioParam={this.props.channel.vibratoAmount}
+                  mapping="square"
+                  min={0}
+                  max={12}
+                  />
+              </div>
             </div>
           </div>
         </TabPanel>
