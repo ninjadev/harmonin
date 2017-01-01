@@ -23,15 +23,13 @@ html, body {
   border-radius: 2px;
   margin: 15px;
   padding: 7px;
-  padding-bottom: 45px;
   position: relative;
+  min-height: 110px;
 }
 
 
 .base-panel .knob-container {
   position: relative;
-  margin-right: 15px;
-  margin-top: 15px;
 }
 
 .envelope-container,
@@ -53,15 +51,14 @@ html, body {
 }
 
 .base-panel {
-  padding-left: 35px;
-  padding-right: 35px;
   position: relative;
+  overflow: hidden;
 }
 
 .base-panel .visualizer {
   position: absolute;
-  left: 0;
-  top: 15px;
+  right: 0;
+  top: 0;
   height: 50px;
   width: 20px;
 }
@@ -97,7 +94,7 @@ html, body {
 .ReactTabs__TabPanel {
   background: #253237;
   border-radius: 2px;
-  padding: 15px 0;
+  padding: 15px;
 }
 
 .master-visualizer {
@@ -112,6 +109,7 @@ html, body {
   background: #3b4449;
   border: 1px solid #1d262b;
   border-radius: 2px;
+  margin-bottom: 15px;
 }
 
 .envelope-visualizer canvas {
@@ -124,7 +122,7 @@ html, body {
   font-size: 20px;
   color: #5c6b73;
   float: left;
-  line-height: 80px;
+  line-height: 60px;
   vertical-align: middle;
 }
 
@@ -151,13 +149,14 @@ html, body {
 }
 
 .waveform-selector-button.triangle {
-  margin-right: 15px;
+  margin-right: 30px;
   border-radius: 0 2px 2px 0;
 }
 
 .filter-selector-button.lowpass {
   border-radius: 2px 0 0 2px;
   border-left: 1px solid #253237;
+  margin-left: 15px;
 }
 
 .filter-selector-button.bandpass {
@@ -177,6 +176,12 @@ html, body {
 .load-preset-button {
   float: right;
   cursor: pointer;
+  text-align: bottom;
+  color: #253237;
+}
+
+.load-preset-button i {
+  padding: 0 5px;
 }
 
 canvas.piano,
@@ -212,8 +217,8 @@ canvas.top-piano {
   width: 8px;
   height: 8px;
   position: absolute;
-  top: 75px;
-  left: 6px;
+  top: 60px;
+  right: 6px;
   background: #a9e156; 
   border: 1px solid #0e2911;
   border-radius: 5px;
@@ -236,16 +241,48 @@ canvas.top-piano {
 .collapse-button {
   width: 20px;
   height: 10px;
-  position: absolute;
-  bottom: 5px;
-  right: 5px;
+  float: right;
   background: #5c6b73;
   border: 1px solid #253237;
   border-radius: 2px;
   cursor: pointer;
-  z-index: 99;
+  text-align: center;
+  color: #253237;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 3px;
+  margin-right: 5px;
+}
+
+.collapse-button i {
+  vertical-align: middle;
+  font-size: 10px;
+  line-height: 8px;
 }
 
 .collapse-button.collapsed {
   background: #253237; 
+  color: #5c6b73;
+}
+
+.channel-filter-wrapper {
+  float: right;
+  margin-right: 35px;
+}
+
+.knob-group {
+  display: inline-block;
+}
+
+.knob-group .knob-container {
+  margin-right: 15px;
+}
+
+.knob-group .knob-container:last-child {
+  margin-right: 0;
+}
+
+.channel-container > .name {
+  margin-bottom: 15px; 
 }

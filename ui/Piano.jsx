@@ -21,7 +21,7 @@ class Piano extends React.Component {
 
   renderLoop() {
     const width = 12;
-    const noteOffset = 36 + 3;
+    const noteOffset = 36;
 
     this.topCtx.fillStyle = 'black';
     this.topCtx.fillRect(0, 0, this.topCanvas.width, this.topCanvas.height);

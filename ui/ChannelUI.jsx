@@ -197,18 +197,31 @@ class ChannelUI extends React.Component {
   render() {
     return (
       <div className="channel-container">
+
         <div
           className="load-preset-button"
           onClick={e => this.loadPresetClicked(e)}
           >
-          Load preset
+          <i className="ion-android-folder-open" />
+          <i className="ion-android-arrow-dropleft" />
+          <i className="ion-android-arrow-dropright" />
         </div>
+
+        <div
+          className={'collapse-button ' + (this.state.isCollapsed ? 'collapsed' : '')}
+          onClick={e => this.toggleCollapse()}
+          onContextMenu={e => this.soloCollapsePressed(e)}
+          >
+          {this.state.isCollapsed
+            ? <i className="ion-plus-round" />
+            : <i className="ion-minus-round" />}
+        </div>
+
 
         <div
           className="load-preset-button"
           onClick={e => this.savePresetClicked(e)}
           >
-          Save preset
         </div>
         {this.state.showPresetList ?
           <div className="preset-list">
@@ -227,102 +240,98 @@ class ChannelUI extends React.Component {
           <span className="patch-name">{this.state.titleB}</span>
         </div>
 
-        <div
-          className={'collapse-button ' + (this.state.isCollapsed ? 'collapsed' : '')}
-          onClick={e => this.toggleCollapse()}
-          onContextMenu={e => this.soloCollapsePressed(e)}
-          />
-
         <div className="base-panel">
           <div className="visualizer">
             <WaveformVisualizer
               width="20"
-              height="50"
+              height="48"
               audioNode={this.props.channel.outputNode}
               ref={ref => this.waveformVisualizer = ref}
               />
           </div>
 
-          <div style={{float: 'right'}}>
-          <Knob
-            name="Filter frq."
-            audioParam={this.props.channel.filter.frequency}
-            mapping="square"
-            min={0}
-            max={21000}
-            ref={filterFrequencyKnob => this.filterFrequencyKnob = filterFrequencyKnob }
-            />
-        {['lowpass', 'highpass', 'bandpass'].map((type, index) => {
-          return (
+          <div className="channel-filter-wrapper">
             <div
-              key={index}
-              style={{
-                background: 'url() no-repeat center center',
-                backgroundImage: 'url(' + ChannelUI.IMAGE_CACHE[this.props.channel.filter.type == type ? type + 'Dark' : type] + ')',
-                backgroundSize: 'cover'
-              }}
-              className={'filter-selector-button ' +
-                         type + ' ' +
-                         (this.props.channel.filter.type == type ? 'selected' : '')}
-              onClick={e => this.onFilterTypeChange(type)}
+              className={'mute-button ' + (this.state.isMuted ? 'muted' : '')}
+              onClick={e => this.toggleMute()}
+              onContextMenu={e => this.soloPressed(e)}
               />
-          );
-        })}
+            <div className="knob-group">
+              <Knob
+                name="Volume"
+                audioParam={this.props.channel.outputNode.gain}
+                mapping="linear"
+                min={0}
+                max={1}
+              />
+            </div>
           </div>
-          <div
-            className={'mute-button ' + (this.state.isMuted ? 'muted' : '')}
-            onClick={e => this.toggleMute()}
-            onContextMenu={e => this.soloPressed(e)}
-            />
-          <Knob
-            name="Volume"
-            audioParam={this.props.channel.outputNode.gain}
-            mapping="linear"
-            min={0}
-            max={1}
-          />
-          <Knob
-            name="Reverb"
-            audioParam={this.props.channel.reverbSendNode.gain}
-            mapping="linear"
-            min={0}
-            max={1}
-            />
-          <Knob
-            name="Delay time"
-            audioParam={this.props.channel.delay.delayTime}
-            mapping="linear"
-            min={0}
-            max={1}
-            />
-          <Knob
-            name="Delay amount"
-            audioParam={this.props.channel.delayGain.gain}
-            mapping="linear"
-            min={0}
-            max={1}
-            />
+          <div className="knob-group">
+            <Knob
+              name="Reverb"
+              audioParam={this.props.channel.reverbSendNode.gain}
+              mapping="linear"
+              min={0}
+              max={1}
+              />
+            <Knob
+              name="Delay time"
+              audioParam={this.props.channel.delay.delayTime}
+              mapping="linear"
+              min={0}
+              max={1}
+              />
+            <Knob
+              name="Delay amount"
+              audioParam={this.props.channel.delayGain.gain}
+              mapping="linear"
+              min={0}
+              max={1}
+              />
+            <Knob
+              name="Filter frq."
+              audioParam={this.props.channel.filter.frequency}
+              mapping="square"
+              min={0}
+              max={21000}
+              ref={filterFrequencyKnob => this.filterFrequencyKnob = filterFrequencyKnob }
+              />
           </div>
-
-
-          <div
-            className={'details-container ' + (this.state.isCollapsed ? 'collapsed' : '')}
-            >
-            {this.props.channel.constructor.name == 'Osiris' ? 
-              <OsirisUI
-                channel={this.props.channel}
-                ref={ui => this.channelUI = ui}
+          {['lowpass', 'highpass', 'bandpass'].map((type, index) => {
+            return (
+              <div
+                key={index}
+                style={{
+                  background: 'url() no-repeat center center',
+                  backgroundImage: 'url(' + ChannelUI.IMAGE_CACHE[this.props.channel.filter.type == type ? type + 'Dark' : type] + ')',
+                  backgroundSize: 'cover'
+                }}
+                className={'filter-selector-button ' +
+                           type + ' ' +
+                           (this.props.channel.filter.type == type ? 'selected' : '')}
+                onClick={e => this.onFilterTypeChange(type)}
                 />
-            :''}
-
-            {this.props.channel.constructor.name == 'Sampler' ?
-              <SamplerUI
-                channel={this.props.channel}
-                ref={ui => this.channelUI = ui}
-                />
-            :''}
-          </div>
+              );
+            })}
         </div>
+        <div
+          className={'details-container ' + (this.state.isCollapsed ? 'collapsed' : '')}
+          >
+          {this.props.channel.constructor.name == 'Osiris' ? 
+            <OsirisUI
+              channel={this.props.channel}
+              ref={ui => this.channelUI = ui}
+              />
+          :''}
+
+          {this.props.channel.constructor.name == 'Sampler' ?
+            <SamplerUI
+              channel={this.props.channel}
+              ref={ui => this.channelUI = ui}
+              />
+          :''}
+        </div>
+      </div>
     );
   }
 }

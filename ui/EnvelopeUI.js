@@ -61,70 +61,72 @@ class EnvelopeUI extends React.Component {
             height="100"
             />
         </div>
-        <Knob
-          name="Delay"
-          audioParam={this.props.envelope.delay}
-          mapping="linear"
-          min={0}
-          max={1000}
-          onChange={() => this.updateCanvas()}
-          />
-        <Knob
-          name="Attack"
-          audioParam={this.props.envelope.attack}
-          mapping="linear"
-          min={0}
-          max={1000}
-          onChange={() => this.updateCanvas()}
-          />
-        <Knob
-          name="Hold"
-          audioParam={this.props.envelope.hold}
-          mapping="linear"
-          min={0}
-          max={1000}
-          onChange={() => this.updateCanvas()}
-          />
-        <Knob
-          name="Decay"
-          audioParam={this.props.envelope.decay}
-          mapping="linear"
-          min={0}
-          max={1000}
-          onChange={() => this.updateCanvas()}
-          />
-        <Knob
-          name="Sustain"
-          audioParam={this.props.envelope.sustain}
-          mapping="linear"
-          min={0}
-          max={1}
-          onChange={() => this.updateCanvas()}
-          />
-        <Knob
-          name="Release"
-          audioParam={this.props.envelope.release}
-          mapping="linear"
-          min={0}
-          max={1000}
-          onChange={() => this.updateCanvas()}
-          />
-        <Knob
-          name="Amount"
-          audioParam={this.props.envelope.amount}
-          mapping="linear"
-          min={0}
-          max={1}
-          onChange={() => this.updateCanvas()}
-          />
-        <Knob
-          name="Offset"
-          audioParam={this.props.envelope.offset}
-          mapping="linear"
-          min={0}
-          max={1}
-          onChange={() => this.updateCanvas()}
-          />
+        <div className="knob-group">
+          <Knob
+            name="Delay"
+            audioParam={this.props.envelope.delay}
+            mapping="linear"
+            min={0}
+            max={1000}
+            onChange={() => this.updateCanvas()}
+            />
+          <Knob
+            name="Attack"
+            audioParam={this.props.envelope.attack}
+            mapping="linear"
+            min={0}
+            max={1000}
+            onChange={() => this.updateCanvas()}
+            />
+          <Knob
+            name="Hold"
+            audioParam={this.props.envelope.hold}
+            mapping="linear"
+            min={0}
+            max={1000}
+            onChange={() => this.updateCanvas()}
+            />
+          <Knob
+            name="Decay"
+            audioParam={this.props.envelope.decay}
+            mapping="linear"
+            min={0}
+            max={1000}
+            onChange={() => this.updateCanvas()}
+            />
+          <Knob
+            name="Sustain"
+            audioParam={this.props.envelope.sustain}
+            mapping="linear"
+            min={0}
+            max={1}
+            onChange={() => this.updateCanvas()}
+            />
+          <Knob
+            name="Release"
+            audioParam={this.props.envelope.release}
+            mapping="linear"
+            min={0}
+            max={1000}
+            onChange={() => this.updateCanvas()}
+            />
+          <Knob
+            name="Amount"
+            audioParam={this.props.envelope.amount}
+            mapping="linear"
+            min={0}
+            max={1}
+            onChange={() => this.updateCanvas()}
+            />
+          <Knob
+            name="Offset"
+            audioParam={this.props.envelope.offset}
+            mapping="linear"
+            min={0}
+            max={1}
+            onChange={() => this.updateCanvas()}
+            />
+        </div>
       </div>
     );
   }
