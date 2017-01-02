@@ -1,10 +1,14 @@
 # harmonin
 
-FL to Web MIDI API bridge and all-in-one synthesizer built for js demos.
+FL Studio to Web MIDI API bridge and all-in-one synthesizer built for js demos.
 
-# Compile
+## Setup
 
-Before you can run harmonin, you need to compile. Make sure you have webpack installed (`npm install webpack -g`) and run `webpack` inside the harmonin folder. This creates the file `compiled.js`
+- Clone the repo, and install dependencies using `npm` or `yarn`.
+- To start harmonin, run `make`.
+- This starts a web server at `localhost:8080`. Go there in a browser to use harmonin.
+
+You can right away confirm that it is working by using your keyboard to trigger MIDI events (make sure vimium or similar is disabled).
 
 ## FL Bridge Setup Instructions
 
@@ -14,4 +18,4 @@ Before you can run harmonin, you need to compile. Make sure you have webpack ins
 ![](http://i.imgur.com/7VBuQbC.png)
 3. Add a MIDI Out in the FL Channel rack.
 ![](http://i.imgur.com/6WJJCsK.png)
-4. Open index.html and start playback in FL.
+4. Open localhost:8080 in a browser and start playback in FL.
