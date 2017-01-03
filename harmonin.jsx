@@ -5,6 +5,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const WaveformVisualizer = require('./ui/WaveformVisualizer');
 const MidiKeyboard = require('./ui/MidiKeyboard');
+const RequestAnimationFrame = require('./ui/RequestAnimationFrame');
 
 import {Tabs} from 'react-tabs';
 Tabs.setUseDefaultStyles(false);
@@ -18,16 +19,18 @@ class Harmonin extends React.Component {
       masterVisualizerHeight: 0
     };
 
+    this.scrollerText = 'Ninjadev humbly invites you to yet another Ninjacon! Meet old and new friends at the 6.5th installment of the world\'s largest independent loosely-coupled hacker\'s collective conference in Mörsil, Sweden on the 13.-15. January 2017. Be ready to have a great time, and don\'t forget your laptop. See you there!                                              ';
+
     this.midiKeyboard = new MidiKeyboard((channel, type, note, velocity) => this.onMidiEvent(channel, type, note, velocity));
     this.midiKeyboard.attach();
 
     this.channelUIs = {};
 
     var audioContext = new AudioContext();
+    this.audioContext = audioContext;
 
     this.channels = [
       new Osiris(audioContext, require('./presets/osiris/UltraNiceAnalogueStyleSaw')),
-      new Osiris(audioContext, require('./presets/osiris/Mellosynth')),
       new Osiris(audioContext, require('./presets/osiris/WidePad')),
       new Osiris(audioContext, require('./presets/osiris/SquarePluck')),
       new Osiris(audioContext, require('./presets/osiris/MotionBass')),
@@ -87,9 +90,8 @@ class Harmonin extends React.Component {
     };
 
     var midiFile;
-    /*
     var oReq = new XMLHttpRequest();
-    oReq.open("GET", "/harmonin2.mid");
+    oReq.open("GET", "/ete.mid");
     oReq.responseType = "arraybuffer";
     oReq.onload = function (oEvent) {
       var arrayBuffer = oReq.response;
@@ -103,7 +105,6 @@ class Harmonin extends React.Component {
     };
 
     oReq.send(null);
-    */
     function tick(time, stepSize) {
       if(midiFile) {
         midiFile.play_forward(stepSize * 1000);
@@ -157,11 +158,31 @@ class Harmonin extends React.Component {
     this.setState({
       masterVisualizerHeight: window.innerHeight - 30
     });
+    this.scrollerCanvas.width = window.innerWidth;
+    this.scrollerCanvas.height = 100;
   }
 
   componentDidMount() {
     window.addEventListener('resize',  e => { this.resize(); });
     this.resize();
+    this.scrollerCtx = this.scrollerCanvas.getContext('2d');
+    RequestAnimationFrame.on(() => {
+      this.scrollerCtx.font = '60px Teko';
+      this.scrollerCtx.fillStyle = 'rgba(37, 50, 55, 1)';
+      this.scrollerCtx.fillRect(0, 0, this.scrollerCanvas.width, this.scrollerCanvas.height);
+      this.scrollerCtx.fillStyle = '#c6f54c';
+      for(let i = 0; i < this.scrollerText.length; i++) {
+        let x = this.scrollerCanvas.width +
+          Math.cos(this.audioContext.currentTime) * Math.sin(this.audioContext.currentTime * 3 + i) * 20 +
+          i * 30 - ((this.audioContext.currentTime * 2) % 120) * 100;
+        let y = 80 + Math.cos(this.audioContext.currentTime * 8 + i / 3) * 20;
+        this.scrollerCtx.save();
+        this.scrollerCtx.translate(x, y);
+        this.scrollerCtx.rotate(Math.sin(this.audioContext.currentTime * 60 / 140 * Math.PI * 4) * 0.2);
+        this.scrollerCtx.fillText(this.scrollerText[i], 0, 0);
+        this.scrollerCtx.restore();
+      }
+    });
   }
 
   solo(id) {
@@ -199,6 +220,10 @@ class Harmonin extends React.Component {
   render() {
     return (
       <div>
+        <canvas
+          className="scroller"
+          ref={canvas => this.scrollerCanvas = canvas}
+          />
        {this.channels.map(channel =>
           <ChannelUI
             channel={channel}

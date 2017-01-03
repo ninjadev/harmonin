@@ -186,7 +186,7 @@ class OsirisUI extends React.Component {
     return (
       <div className="base-panel"> 
 
-       <Tabs>
+       <Tabs selectedIndex={4}>
 
         <TabList>
           <Tab>OSCILLATORS</Tab>

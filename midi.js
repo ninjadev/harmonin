@@ -222,7 +222,7 @@ Track.prototype.play_forward = function(t){
         if(this.player_tracker < this.events.length){
             this.dt += this.events[this.player_tracker].dt;
         }else{
-            this.active = false;
+            this.player_tracker = 0;
             break;
         }
     }
