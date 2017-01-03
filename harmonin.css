@@ -25,6 +25,8 @@ html, body {
   padding: 7px;
   position: relative;
   min-height: 110px;
+  display: inline-block;
+  vertical-align: top;
 }
 
 
