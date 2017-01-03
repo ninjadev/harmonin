@@ -30,6 +30,7 @@ class Harmonin extends React.Component {
       new Osiris(audioContext, require('./presets/osiris/Mellosynth')),
       new Osiris(audioContext, require('./presets/osiris/WidePad')),
       new Osiris(audioContext, require('./presets/osiris/SquarePluck')),
+      new Osiris(audioContext, require('./presets/osiris/MotionBass')),
       new Sampler(audioContext, {
         volume: 0.6,
         filename: 'data/kick.wav'
@@ -45,7 +46,7 @@ class Harmonin extends React.Component {
       }),
       new Sampler(audioContext, {
         reverb: .5,
-        volume: 0.5,
+        volume: 1,
         filename: 'data/crash.wav'
       })
     ];

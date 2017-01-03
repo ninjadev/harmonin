@@ -28,7 +28,7 @@ class Sampler extends BaseChannel {
       gain.gain.value = velocity / 127;
       gain.connect(this.accumulator);
       source.buffer = this.audioBuffer;
-      source.playbackRate.value = this.noteNumberToFrequency(note) / 440;
+      source.playbackRate.value = this.noteNumberToFrequency(note + 12) / 440;
       source.connect(gain);
       source.start();
     }
